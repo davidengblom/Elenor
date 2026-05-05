@@ -24,7 +24,7 @@ namespace Elenor {
         }
 
         void ApplyVisuals() {
-            if (data == null || _renderer == null) return;
+            if (data == null) return;
             _renderer.color = data.DisplayColor;
         }
 

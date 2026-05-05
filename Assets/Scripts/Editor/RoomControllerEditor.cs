@@ -1,13 +1,10 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Elenor.EditorTools
-{
+namespace Elenor.EditorTools {
     [CustomEditor(typeof(RoomController))]
-    public class RoomControllerEditor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
+    public class RoomControllerEditor : Editor {
+        public override void OnInspectorGUI() {
             DrawDefaultInspector();
 
             var room = (RoomController)target;
@@ -25,8 +22,7 @@ namespace Elenor.EditorTools
 
             EditorGUILayout.Space();
 
-            using (new EditorGUILayout.HorizontalScope())
-            {
+            using (new EditorGUILayout.HorizontalScope()) {
                 if (GUILayout.Button("Add Enemy Spawn"))   CreateMarker(room, SpawnPoint.Kind.Enemy);
                 if (GUILayout.Button("Add Player Spawn"))  CreateMarker(room, SpawnPoint.Kind.Player);
                 if (GUILayout.Button("Add Door Anchor"))   CreateMarker(room, SpawnPoint.Kind.Door);
@@ -34,14 +30,12 @@ namespace Elenor.EditorTools
 
             EditorGUILayout.Space();
 
-            if (GUILayout.Button("Validate Room"))
-            {
+            if (GUILayout.Button("Validate Room")) {
                 EditorUtility.DisplayDialog("Room Validation", room.Validate(), "OK");
             }
         }
 
-        static void CreateMarker(RoomController room, SpawnPoint.Kind kind)
-        {
+        static void CreateMarker(RoomController room, SpawnPoint.Kind kind) {
             var go = new GameObject($"Spawn_{kind}_{System.Guid.NewGuid().ToString().Substring(0, 4)}");
             Undo.RegisterCreatedObjectUndo(go, "Create Spawn Point");
             Undo.SetTransformParent(go.transform, room.transform, "Parent Spawn Point");

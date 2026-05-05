@@ -61,11 +61,12 @@ namespace Elenor {
             Died?.Invoke();
             gameObject.SetActive(false);
         }
-
+#if UNITY_EDITOR
         [ContextMenu("DEBUG: Take 1 Damage")]
         void DebugTakeDamage() => TakeDamage(1f);
 
         [ContextMenu("DEBUG: Heal to Full")]
         void DebugHealToFull() => Heal(maxHealth);
     }
+#endif
 }

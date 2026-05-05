@@ -7,7 +7,6 @@ namespace Elenor {
         [SerializeField] Kind kind = Kind.Enemy;
 
         public Kind PointKind => kind;
-        public void SetKind(Kind value) => kind = value;
 
         void OnDrawGizmos() {
             Color c = kind switch {

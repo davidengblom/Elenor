@@ -98,7 +98,7 @@ namespace Elenor {
         }
 
         public List<SpawnPoint> GetEnemySpawns() => GetSpawns(SpawnPoint.Kind.Enemy);
-        public SpawnPoint GetPlayerSpawns() => GetSpawns(SpawnPoint.Kind.Player).FirstOrDefault();
+        public SpawnPoint GetPlayerSpawn() => GetSpawns(SpawnPoint.Kind.Player).FirstOrDefault();
         public SpawnPoint GetDoorAnchor() => GetSpawns(SpawnPoint.Kind.Door).FirstOrDefault();
 
         public string Validate() {
@@ -113,9 +113,9 @@ namespace Elenor {
             sb.AppendLine();
 
             if (enemyCount == 0) sb.AppendLine("WARNING: No enemy spawn points. Room will be 'cleared' immediately.");
-            if (playerCount == 0) sb.AppendLine("ERROR: No player spawn point. Phase 6 room transitions will have nowhere to place the player.");
+            if (playerCount == 0) sb.AppendLine("ERROR: No player spawn point.");
             if (playerCount > 1) sb.AppendLine("WARNING: Multiple player spawn points found. Only the first will be used.");
-            if (doorCount == 0) sb.AppendLine("ERROR: No door anchor. Phase 6 will have nowhere to place the exit door.");
+            if (doorCount == 0) sb.AppendLine("ERROR: No door anchor.");
             if (doorCount > 1) sb.AppendLine("WARNING: Multiple door anchors found. Only the first will be used.");
 
             if (enemyCount > 0 && playerCount == 1 && doorCount == 1) {

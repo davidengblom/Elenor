@@ -63,7 +63,7 @@ namespace Elenor {
         void PlacePlayerAtSpawn() {
             if (_player == null || _currentRoom == null) return;
 
-            SpawnPoint spawn = _currentRoom.GetPlayerSpawns();
+            SpawnPoint spawn = _currentRoom.GetPlayerSpawn();
             if (spawn == null) {
                 Debug.LogWarning($"RoomManager: room '{_currentRoom.name}' has no player spawn marker.", this);
                 return;

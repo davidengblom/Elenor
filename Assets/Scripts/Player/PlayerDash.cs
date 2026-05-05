@@ -35,8 +35,7 @@ namespace Elenor {
         }
 
         void OnDisable() {
-            _input.DashPressed -= TryDash;
-            // Safety: dont leave movement locked if disabled mid dash
+            if (_input != null) _input.DashPressed -= TryDash;
             if (_isDashing) EndDash();
         }
 
@@ -76,7 +75,7 @@ namespace Elenor {
 
         void EndDash() {
             _isDashing = false;
-            _movement.MovementLocked = false;
+            if (_movement != null) _movement.MovementLocked = false;
         }
     }
 }
