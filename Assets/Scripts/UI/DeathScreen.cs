@@ -15,8 +15,8 @@ namespace Elenor {
         }
 
         void Start() {
-            GameObject p = GameObject.FindGameObjectWithTag("Player");
-            if (p != null) _health = p.GetComponent<PlayerHealth>();
+            Transform player = PlayerLocator.Player;
+            if (player != null) _health = player.GetComponent<PlayerHealth>();
 
             if (_health != null) {
                 _health.Died += OnPlayerDied;

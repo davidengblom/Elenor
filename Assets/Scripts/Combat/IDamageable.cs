@@ -1,5 +1,14 @@
 namespace Elenor {
+    /// <summary>
+    /// Anything that can take damage. Implementers are responsible for their own
+    /// invulnerability windows, death handling and event firing.
+    /// </summary>
     public interface IDamageable {
-        void TakeDamage(float damage);
+        /// <summary>
+        /// Apply damage to this object. Implementers may early-out if already
+        /// dead, currently invulnerable or the amount is zero or negative.
+        /// </summary>
+        /// <param name="amount">Damage points to apply.</param>
+        void TakeDamage(float amount);
     }
 }

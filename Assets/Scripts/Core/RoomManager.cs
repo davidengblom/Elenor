@@ -7,8 +7,6 @@ namespace Elenor {
         [SerializeField] GameObject roomPrefab;
 
         RoomController _currentRoom;
-        Transform _player;
-        Rigidbody2D _playerBody;
 
         public RoomController CurrentRoom => _currentRoom;
 
@@ -18,12 +16,6 @@ namespace Elenor {
                 return;
             }
             Instance = this;
-
-            GameObject p = GameObject.FindGameObjectWithTag("Player");
-            if (p != null) {
-                _player = p.transform;
-                _player.TryGetComponent(out _playerBody);
-            }
         }
 
         void OnDestroy() {
@@ -61,7 +53,8 @@ namespace Elenor {
         }
 
         void PlacePlayerAtSpawn() {
-            if (_player == null || _currentRoom == null) return;
+            Transform player = PlayerLocator.Player;
+            if (player == null || _currentRoom == null) return;
 
             SpawnPoint spawn = _currentRoom.GetPlayerSpawn();
             if (spawn == null) {
@@ -69,8 +62,8 @@ namespace Elenor {
                 return;
             }
 
-            _player.position = spawn.transform.position;
-            if (_playerBody != null) _playerBody.linearVelocity = Vector2.zero;
+            player.position = spawn.transform.position;
+            if (player.TryGetComponent(out Rigidbody2D rb)) rb.linearVelocity = Vector2.zero;
         }
 
         void ClearProjectiles() {

@@ -7,18 +7,7 @@ namespace Elenor {
         [SerializeField, Tooltip("Random seconds added to the first shot, so enemies spawned at the same time don't fire together.")]
         float startupJitter = 0.5f;
 
-        Transform _playerCache;
         float _nextFireTime;
-
-        Transform Player {
-            get {
-                if (_playerCache == null) {
-                    var go = GameObject.FindGameObjectWithTag("Player");
-                    if (go != null) _playerCache = go.transform;
-                }
-                return _playerCache;
-            }
-        }
 
         void Start() {
             _nextFireTime = Time.time + Random.Range(0f, startupJitter);
@@ -26,10 +15,12 @@ namespace Elenor {
 
         void Update() {
             if (data == null || data.Weapon == null) return;
-            if (Player == null) return;
+
+            Transform player = PlayerLocator.Player;
+            if (player == null) return;
             if (Time.time < _nextFireTime) return;
 
-            Vector2 dir = ((Vector2)Player.position - (Vector2)transform.position).normalized;
+            Vector2 dir = ((Vector2)player.position - (Vector2)transform.position).normalized;
             if (dir.sqrMagnitude < 0.0001f) return;
 
             Spawn(dir);

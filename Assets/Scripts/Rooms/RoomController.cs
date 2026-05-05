@@ -85,6 +85,10 @@ namespace Elenor {
             if (enemy == null) return;
             if (!_activeEnemies.Remove(enemy)) return;
 
+            // Skip room-cleared logic when the scene is unloading
+            // (e.g player death triggered a reload)
+            if (!gameObject.scene.isLoaded) return; 
+
             if (!IsCleared && _activeEnemies.Count == 0) {
                 IsCleared = true;
                 SpawnReward();
