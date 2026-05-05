@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 5962588826321695492}
   - component: {fileID: 5052905625322135698}
   - component: {fileID: 105755706641589186}
+  - component: {fileID: 4500675013734275941}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -232,6 +233,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Elenor::Elenor.PlayerShooter
   weapon: {fileID: 11400000, guid: 40c19aae80451964a9d6549459fab404, type: 2}
   muzzleOffset: 0.45
+  damageMultiplier: 1
 --- !u!114 &5962588826321695492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -276,3 +278,17 @@ MonoBehaviour:
   dashColor: {r: 1, g: 1, b: 1, a: 1}
   invulnBlinkHz: 10
   invulnMinAlpha: 0.35
+--- !u!114 &4500675013734275941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4785831068992180940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 319f0097001ada04d9410b392c020892, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Elenor::Elenor.PlayerStats
+  damageMultiplier: 1
+  moveSpeed: 6

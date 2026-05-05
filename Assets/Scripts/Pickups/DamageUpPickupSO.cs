@@ -6,8 +6,8 @@ namespace Elenor {
         [SerializeField] float multiplierBonus = 0.5f;
 
         public override void ApplyTo(GameObject player) {
-            if (player.TryGetComponent<PlayerShooter>(out var shooter)) {
-                shooter.DamageMultiplier += multiplierBonus;
+            if (player.TryGetComponent<PlayerStats>(out var stats)) {
+                stats.DamageMultiplier += multiplierBonus;
             }
         }
     }

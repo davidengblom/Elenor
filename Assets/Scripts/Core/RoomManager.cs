@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Elenor {
@@ -10,6 +11,9 @@ namespace Elenor {
 
         public RoomController CurrentRoom => _currentRoom;
 
+        public event Action<int> RoomsClearedChanged;
+        public int RoomsCleared { get; private set; }
+
         void Awake() {
             if (Instance != null && Instance != this) {
                 Destroy(gameObject);
@@ -19,6 +23,9 @@ namespace Elenor {
         }
 
         void OnDestroy() {
+            if (_currentRoom != null) {
+                _currentRoom.RoomCleared -= OnCurrentRoomCleared;
+            }
             if (Instance == this) Instance = null;
         }
 
@@ -34,6 +41,7 @@ namespace Elenor {
             ClearProjectiles();
 
             if (_currentRoom != null) {
+                _currentRoom.RoomCleared -= OnCurrentRoomCleared;
                 Destroy(_currentRoom.gameObject);
             }
 
@@ -48,6 +56,8 @@ namespace Elenor {
                 Debug.LogError($"RoomManager: roomPrefab {roomPrefab.name} does not have a RoomController component.", this);
                 return;
             }
+
+            _currentRoom.RoomCleared += OnCurrentRoomCleared;
 
             PlacePlayerAtSpawn();
         }
@@ -71,6 +81,11 @@ namespace Elenor {
             for (int i = 0; i < projectiles.Length; i++) {
                 if (projectiles[i] != null) Destroy(projectiles[i].gameObject);
             }
+        }
+
+        void OnCurrentRoomCleared() {
+            RoomsCleared++;
+            RoomsClearedChanged?.Invoke(RoomsCleared);
         }
     }
 }
