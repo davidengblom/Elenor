@@ -1,0 +1,18 @@
+{
+    "name": "Elenor.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8a6ee39a3f122cb4a8c6bf03a07f0a78"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
