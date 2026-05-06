@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Elenor {
     public class RoomManager : MonoBehaviour {
         public static RoomManager Instance { get; private set; }
 
-        [SerializeField] GameObject roomPrefab;
+        [SerializeField] List<GameObject> roomPrefabs = new();
 
         RoomController _currentRoom;
 
@@ -45,21 +46,33 @@ namespace Elenor {
                 Destroy(_currentRoom.gameObject);
             }
 
-            if (roomPrefab == null) {
-                Debug.LogError("RoomManager: roomPrefab not assigned.", this);
+            if (roomPrefabs == null || roomPrefabs.Count == 0) {
+                Debug.LogError("RoomManager: roomPrefabs list is empty.", this);
                 return;
             }
 
-            GameObject go = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity);
+            GameObject prefab = PickRoomPrefab();
+            if (prefab == null) {
+                Debug.LogError("RoomManager: picked room prefab is null.", this);
+                return;
+            }
+
+            GameObject go = Instantiate(prefab, Vector3.zero, Quaternion.identity);
             _currentRoom = go.GetComponent<RoomController>();
             if (_currentRoom == null) {
-                Debug.LogError($"RoomManager: roomPrefab {roomPrefab.name} does not have a RoomController component.", this);
+                Debug.LogError($"RoomManager: roomPrefab {prefab.name} does not have a RoomController component.", this);
                 return;
             }
 
             _currentRoom.RoomCleared += OnCurrentRoomCleared;
 
             PlacePlayerAtSpawn();
+        }
+
+        GameObject PickRoomPrefab() {
+            // First room is deterministic for now.
+            if (RoomsCleared == 0) return roomPrefabs[0];
+            return roomPrefabs[UnityEngine.Random.Range(0, roomPrefabs.Count)];
         }
 
         void PlacePlayerAtSpawn() {

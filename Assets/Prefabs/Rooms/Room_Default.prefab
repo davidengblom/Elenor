@@ -418,16 +418,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d4ecc27d62fd324a8741169b6891a88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.RoomController
-  initialEnemies:
-  - {fileID: 7076252358195883680, guid: 3001066f239895249a1a1f06f500391e, type: 3}
-  - {fileID: 7076252358195883680, guid: 3001066f239895249a1a1f06f500391e, type: 3}
-  - {fileID: 7076252358195883680, guid: 3001066f239895249a1a1f06f500391e, type: 3}
-  - {fileID: 7076252358195883680, guid: 3001066f239895249a1a1f06f500391e, type: 3}
+  contents: {fileID: 11400000, guid: 88baef095ba44d74a909b93581efcc65, type: 2}
   pickupPrefab: {fileID: 2247213125671513883, guid: 426f85d77beab9f45be9198f5a9c03f4, type: 3}
-  possiblePickups:
-  - {fileID: 11400000, guid: ceea4616310992d468819a90dcc462f2, type: 2}
-  - {fileID: 11400000, guid: 6bf2c2dd1a2bd2d4a86113cdef2aa46d, type: 2}
-  - {fileID: 11400000, guid: cf813b97a4628b240b6643c5f08892d8, type: 2}
   doorPrefab: {fileID: 171544710038563069, guid: 12fb946adb436544b9fd0b17f961b73b, type: 3}
 --- !u!1 &4326104940326505006
 GameObject:

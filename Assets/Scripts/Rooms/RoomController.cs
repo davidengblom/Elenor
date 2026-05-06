@@ -9,9 +9,8 @@ namespace Elenor {
         public event Action RoomCleared;
 
         [Header("Spawning")]
-        [SerializeField] List<GameObject> initialEnemies = new();
+        [SerializeField] RoomContentsSO contents;
         [SerializeField] GameObject pickupPrefab;
-        [SerializeField] List<PickupSO> possiblePickups = new();
         [SerializeField] GameObject doorPrefab;
 
         public bool IsCleared { get; private set; }
@@ -26,17 +25,23 @@ namespace Elenor {
         }
 
         void SpawnInitialEnemies() {
+            if (contents == null) {
+                Debug.LogWarning($"{name}: no RoomContentsSO assigned. Room will be 'cleared' immediately.", this);
+                return;
+            }
+
+            var enemies = contents.InitialEnemies;
             var spawns = GetEnemySpawns();
             int placed = 0;
 
-            for (int i = 0; i < initialEnemies.Count && i < spawns.Count; i++) {
-                if (initialEnemies[i] == null) continue;
-                Instantiate(initialEnemies[i], spawns[i].transform.position, Quaternion.identity, transform);
+            for (int i = 0; i < enemies.Count && i < spawns.Count; i++) {
+                if (enemies[i] == null) continue;
+                Instantiate(enemies[i], spawns[i].transform.position, Quaternion.identity, transform);
                 placed++;
             }
 
-            if (initialEnemies.Count > spawns.Count) {
-                Debug.LogWarning($"{name}: more initialEnemies ({initialEnemies.Count}) than enemy spawns ({spawns.Count}). Extras ignored.", this);
+            if (enemies.Count > spawns.Count) {
+                Debug.LogWarning($"{name}: more initialEnemies ({enemies.Count}) than enemy spawns ({spawns.Count}). Extras ignored.", this);
             }
 
             if (placed == 0) {
@@ -49,12 +54,13 @@ namespace Elenor {
                 Debug.LogWarning($"{name}: no pickupPrefab assigned. Skipping reward.", this);
                 return;
             }
-            if (possiblePickups == null || possiblePickups.Count == 0) {
-                Debug.LogWarning($"{name}: possiblePickups is empty. Skipping reward.", this);
+            if (contents == null || contents.PossiblePickups.Count == 0) {
+                Debug.LogWarning($"{name}: contents has no possible pickups. Skipping reward.", this);
                 return;
             }
 
-            PickupSO so = possiblePickups[UnityEngine.Random.Range(0, possiblePickups.Count)];
+            var pool = contents.PossiblePickups;
+            PickupSO so = pool[UnityEngine.Random.Range(0, pool.Count)];
             if (so == null) return;
 
             GameObject go = Instantiate(pickupPrefab, transform.position, Quaternion.identity, transform);
@@ -116,14 +122,28 @@ namespace Elenor {
             sb.AppendLine($"Door spawns: {doorCount}");
             sb.AppendLine();
 
+            if (contents == null) {
+                sb.AppendLine("ERROR: No RoomContentsSO assigned.");
+            } else {
+                sb.AppendLine($"Initial enemies in contents: {contents.InitialEnemies.Count}");
+                sb.AppendLine($"Possible pickups in contents: {contents.PossiblePickups.Count}");
+                if (contents.InitialEnemies.Count > enemyCount) {
+                    sb.AppendLine($"WARNING: More initialEnemies ({contents.InitialEnemies.Count}) than enemy spawns ({enemyCount}). Extras will be ignored.");
+                }
+                if (contents.PossiblePickups.Count == 0) {
+                    sb.AppendLine("WARNING: contents has no possible pickups. No reward will spawn.");
+                }
+            }
+            sb.AppendLine();
+
             if (enemyCount == 0) sb.AppendLine("WARNING: No enemy spawn points. Room will be 'cleared' immediately.");
             if (playerCount == 0) sb.AppendLine("ERROR: No player spawn point.");
             if (playerCount > 1) sb.AppendLine("WARNING: Multiple player spawn points found. Only the first will be used.");
             if (doorCount == 0) sb.AppendLine("ERROR: No door anchor.");
             if (doorCount > 1) sb.AppendLine("WARNING: Multiple door anchors found. Only the first will be used.");
 
-            if (enemyCount > 0 && playerCount == 1 && doorCount == 1) {
-                sb.AppendLine("All required markers present. Room is well formed.");
+            if (enemyCount > 0 && playerCount == 1 && doorCount == 1 && contents != null) {
+                sb.AppendLine("All required markers and contents present. Room is well formed.");
             }
 
             return sb.ToString();
