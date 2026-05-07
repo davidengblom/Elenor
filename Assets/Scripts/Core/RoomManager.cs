@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Elenor {
@@ -7,18 +8,18 @@ namespace Elenor {
 
         [SerializeField] FloorSO floor;
 
-        int _currentRoomIndex;
+        Vector2Int _currentGridPos;
+        Direction? _enteredFrom;
+        readonly HashSet<Vector2Int> _clearedRooms = new();
 
         RoomController _currentRoom;
-
         public RoomController CurrentRoom => _currentRoom;
 
         public event Action<int> RoomsClearedChanged;
-        public event Action<int, int> RoomChanged; // (currentIndex, totalRooms)
+        public event Action<Vector2Int> RoomChanged;
         public int RoomsCleared { get; private set; }
-
-        public int CurrentRoomIndex => _currentRoomIndex;
-        public int FloorRoomCount => floor != null ? floor.RoomCount : 0;
+        public Vector2Int CurrentGridPos => _currentGridPos;
+        public FloorSO Floor => floor;
 
         void Awake() {
             if (Instance != null && Instance != this) {
@@ -36,20 +37,28 @@ namespace Elenor {
         }
 
         void Start() {
-            SpawnRoom();
-        }
-
-        public void GoToNextRoom() {
-            if (floor == null || floor.RoomCount == 0) return;
-
-            _currentRoomIndex++;
-            if (_currentRoomIndex >= floor.RoomCount) {
-                _currentRoomIndex = 0;
-                Debug.Log($"Floor {floor.DisplayName} cleared. Looping back to start.");
+            if (floor == null) {
+                Debug.LogError("RoomManager: no Floor assigned.", this);
+                return;
             }
-
+            _currentGridPos = floor.StartPosition;
+            _enteredFrom = null;
             SpawnRoom();
         }
+
+        public void GoToNeighborInDirection(Direction dir) {
+            if (floor == null) return;
+            Vector2Int target = _currentGridPos + dir.Offset();
+            if (!floor.HasRoomAt(target)) {
+                Debug.LogWarning($"RoomManager: no room at {target} (going {dir} from {_currentGridPos}).", this);
+                return;
+            }
+            _currentGridPos = target;
+            _enteredFrom = dir.Opposite();
+            SpawnRoom();
+        }
+
+        public bool HasNeighbor(Direction dir) => floor != null && floor.HasRoomAt(_currentGridPos + dir.Offset());
 
         void SpawnRoom() {
             ClearProjectiles();
@@ -59,27 +68,25 @@ namespace Elenor {
                 Destroy(_currentRoom.gameObject);
             }
 
-            if (floor == null || floor.RoomCount == 0) {
-                Debug.LogError("RoomManager: no Floor assigned, or floor has no rooms.", this);
+            FloorRoomEntry entry = floor.FindRoomAt(_currentGridPos);
+            if (entry == null || entry.roomPrefab == null) {
+                Debug.LogError($"RoomManager: no valid room at {_currentGridPos}.", this);
                 return;
             }
 
-            GameObject prefab = floor.Rooms[_currentRoomIndex];
-            if (prefab == null) {
-                Debug.LogError($"RoomManager: floor.Rooms[{_currentRoomIndex}] is null. Check the floor asset.", this);
-                return;
-            }
-
-            GameObject go = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+            GameObject go = Instantiate(entry.roomPrefab, Vector3.zero, Quaternion.identity);
             _currentRoom = go.GetComponent<RoomController>();
             if (_currentRoom == null) {
-                Debug.LogError($"RoomManager: roomPrefab {prefab.name} does not have a RoomController component.", this);
+                Debug.LogError($"RoomManager: prefab {entry.roomPrefab.name} has no RoomController.", this);
                 return;
             }
 
             _currentRoom.RoomCleared += OnCurrentRoomCleared;
 
-            RoomChanged?.Invoke(_currentRoomIndex, floor.RoomCount);
+            bool alreadyCleared = _clearedRooms.Contains(_currentGridPos);
+            _currentRoom.Initialize(alreadyCleared);
+
+            RoomChanged?.Invoke(_currentGridPos);
 
             PlacePlayerAtSpawn();
         }
@@ -88,13 +95,27 @@ namespace Elenor {
             Transform player = PlayerLocator.Player;
             if (player == null || _currentRoom == null) return;
 
-            SpawnPoint spawn = _currentRoom.GetPlayerSpawn();
-            if (spawn == null) {
-                Debug.LogWarning($"RoomManager: room '{_currentRoom.name}' has no player spawn marker.", this);
-                return;
+            Vector3 targetPos;
+            if (_enteredFrom.HasValue) {
+                SpawnPoint anchor = _currentRoom.GetDoorAnchor(_enteredFrom.Value);
+                if (anchor != null) {
+                    Vector2 pushIn = -((Vector2)_enteredFrom.Value.Offset()) * 1.5f;
+                    targetPos = anchor.transform.position + (Vector3)pushIn;
+                } else {
+                    Debug.LogWarning($"RoomManager: room at {_currentGridPos} has no door anchor for direction {_enteredFrom.Value}.", this);
+                    SpawnPoint fallback = _currentRoom.GetPlayerSpawn();
+                    targetPos = fallback != null ? fallback.transform.position : Vector3.zero;
+                }
+            } else {
+                SpawnPoint spawn = _currentRoom.GetPlayerSpawn();
+                if (spawn == null) {
+                    Debug.LogWarning($"RoomManager: room at {_currentGridPos} has no player spawn marker.", this);
+                    return;
+                }
+                targetPos = spawn.transform.position;
             }
 
-            player.position = spawn.transform.position;
+            player.position = targetPos;
             if (player.TryGetComponent(out Rigidbody2D rb)) rb.linearVelocity = Vector2.zero;
         }
 
@@ -106,6 +127,7 @@ namespace Elenor {
         }
 
         void OnCurrentRoomCleared() {
+            _clearedRooms.Add(_currentGridPos);
             RoomsCleared++;
             RoomsClearedChanged?.Invoke(RoomsCleared);
         }

@@ -31,7 +31,7 @@ namespace Elenor {
                 RoomManager.Instance.RoomsClearedChanged += OnRoomsClearedChanged;
                 RoomManager.Instance.RoomChanged += OnRoomChanged;
                 OnRoomsClearedChanged(RoomManager.Instance.RoomsCleared);
-                OnRoomChanged(RoomManager.Instance.CurrentRoomIndex, RoomManager.Instance.FloorRoomCount);
+                OnRoomChanged(RoomManager.Instance.CurrentGridPos);
             }
         }
 
@@ -66,9 +66,9 @@ namespace Elenor {
             }
         }
 
-        void OnRoomChanged(int currentIndex, int totalRooms) {
+        void OnRoomChanged(Vector2Int gridPos) {
             if (roomIndexText != null) {
-                roomIndexText.text = $"Room {currentIndex + 1} / {totalRooms}";
+                roomIndexText.text = $"Pos {gridPos.x},{gridPos.y}";
             }
         }
     }

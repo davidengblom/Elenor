@@ -20,8 +20,13 @@ namespace Elenor {
         public IReadOnlyCollection<GameObject> ActiveEnemies => _activeEnemies;
         public int ActiveEnemyCount => _activeEnemies.Count;
 
-        void Start() {
-            SpawnInitialEnemies();
+        public void Initialize(bool alreadyCleared) {
+            if (alreadyCleared) {
+                IsCleared = true;
+                SpawnDoors();
+            } else {
+                SpawnInitialEnemies();
+            }
         }
 
         void SpawnInitialEnemies() {
@@ -69,17 +74,25 @@ namespace Elenor {
             }
         }
 
-        void SpawnDoor() {
+        void SpawnDoors() {
             if (doorPrefab == null) {
-                Debug.LogWarning($"{name}: no doorPrefab assigned. Skipping door.", this);
+                Debug.LogWarning($"{name}: no doorPrefab assigned. Skipping doors.", this);
                 return;
             }
-            SpawnPoint anchor = GetDoorAnchor();
-            if (anchor == null) {
-                Debug.LogWarning($"{name}: no door anchor. Skipping door.", this);
-                return;
+            foreach (Direction dir in System.Enum.GetValues(typeof(Direction))) {
+                if (RoomManager.Instance == null || !RoomManager.Instance.HasNeighbor(dir)) continue;
+
+                SpawnPoint anchor = GetDoorAnchor(dir);
+                if (anchor == null) {
+                    Debug.LogWarning($"{name}: no door anchor for direction {dir}, but neighbor exists.", this);
+                    continue;
+                }
+
+                GameObject doorGO = Instantiate(doorPrefab, anchor.transform.position, Quaternion.identity, transform);
+                if (doorGO.TryGetComponent<Door>(out var door)) {
+                    door.Configure(dir);
+                }
             }
-            Instantiate(doorPrefab, anchor.transform.position, Quaternion.identity, transform);
         }
 
         public void RegisterEnemy(GameObject enemy) {
@@ -98,7 +111,7 @@ namespace Elenor {
             if (!IsCleared && _activeEnemies.Count == 0) {
                 IsCleared = true;
                 SpawnReward();
-                SpawnDoor();
+                SpawnDoors();
                 RoomCleared?.Invoke();
             }
         }
@@ -109,7 +122,9 @@ namespace Elenor {
 
         public List<SpawnPoint> GetEnemySpawns() => GetSpawns(SpawnPoint.Kind.Enemy);
         public SpawnPoint GetPlayerSpawn() => GetSpawns(SpawnPoint.Kind.Player).FirstOrDefault();
-        public SpawnPoint GetDoorAnchor() => GetSpawns(SpawnPoint.Kind.Door).FirstOrDefault();
+        public SpawnPoint GetDoorAnchor(Direction dir) => GetSpawns(SpawnPoint.Kind.Door).FirstOrDefault(sp => sp.DoorDirection == dir);
+
+        public IEnumerable<SpawnPoint> GetAllDoorAnchors() => GetSpawns(SpawnPoint.Kind.Door);
 
         public string Validate() {
             var sb = new StringBuilder();
@@ -140,11 +155,21 @@ namespace Elenor {
             if (playerCount == 0) sb.AppendLine("ERROR: No player spawn point.");
             if (playerCount > 1) sb.AppendLine("WARNING: Multiple player spawn points found. Only the first will be used.");
             if (doorCount == 0) sb.AppendLine("ERROR: No door anchor.");
-            if (doorCount > 1) sb.AppendLine("WARNING: Multiple door anchors found. Only the first will be used.");
+            if (doorCount > 1) sb.AppendLine($"WARNING: {doorCount} door anchors. Maximum used is 4 (one per direction).");
 
-            if (enemyCount > 0 && playerCount == 1 && doorCount == 1 && contents != null) {
-                sb.AppendLine("All required markers and contents present. Room is well formed.");
+            // Check for duplicate door anchors
+            var dirs = GetSpawns(SpawnPoint.Kind.Door).Select(sp => sp.DoorDirection).ToList();
+            for (int i = 0; i < dirs.Count; i++) {
+                for (int j = i + 1; j < dirs.Count; j++) {
+                    if (dirs[i] == dirs[j]) {
+                        sb.AppendLine($"WARNING: Two door anchors share direction {dirs[i]}. Only the first will be used.");
+                    }
+                }
             }
+
+                if (enemyCount > 0 && playerCount == 1 && doorCount == 1 && contents != null) {
+                    sb.AppendLine("All required markers and contents present. Room is well formed.");
+                }
 
             return sb.ToString();
         }

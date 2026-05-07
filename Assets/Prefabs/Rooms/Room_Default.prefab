@@ -321,6 +321,99 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.SpawnPoint
   kind: 0
+  direction: 0
+--- !u!1 &1002739106023010011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6185186658584192897}
+  - component: {fileID: 603009439130444805}
+  m_Layer: 0
+  m_Name: Spawn_Door_fcac
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6185186658584192897
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002739106023010011}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 10, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1846846265726850503}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &603009439130444805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002739106023010011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edffad7bcdf13ca4ab9398501b019b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Elenor::Elenor.SpawnPoint
+  kind: 2
+  direction: 2
+--- !u!1 &2342751608483607604
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7361275415289285222}
+  - component: {fileID: 3970356065516177741}
+  m_Layer: 0
+  m_Name: Spawn_Door_1002
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7361275415289285222
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2342751608483607604}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -5.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1846846265726850503}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3970356065516177741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2342751608483607604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edffad7bcdf13ca4ab9398501b019b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Elenor::Elenor.SpawnPoint
+  kind: 2
+  direction: 1
 --- !u!1 &2811578563222169417
 GameObject:
   m_ObjectHideFlags: 0
@@ -366,6 +459,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.SpawnPoint
   kind: 2
+  direction: 0
 --- !u!1 &3827708581576041634
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,6 +498,9 @@ Transform:
   - {fileID: 3691305711910478968}
   - {fileID: 7742972823588762440}
   - {fileID: 7566574785078675662}
+  - {fileID: 4406894963748458487}
+  - {fileID: 6185186658584192897}
+  - {fileID: 7361275415289285222}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &342122009527593702
@@ -695,6 +792,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.SpawnPoint
   kind: 0
+  direction: 0
 --- !u!1 &7303614929032701795
 GameObject:
   m_ObjectHideFlags: 0
@@ -740,6 +838,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.SpawnPoint
   kind: 0
+  direction: 0
 --- !u!1 &7558816339299004829
 GameObject:
   m_ObjectHideFlags: 0
@@ -785,6 +884,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.SpawnPoint
   kind: 0
+  direction: 0
 --- !u!1 &8505900509384969568
 GameObject:
   m_ObjectHideFlags: 0
@@ -958,6 +1058,52 @@ Transform:
   - {fileID: 4397213885904751423}
   m_Father: {fileID: 1846846265726850503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8969829387962084623
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4406894963748458487}
+  - component: {fileID: 5301756537575259603}
+  m_Layer: 0
+  m_Name: Spawn_Door_53dc
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4406894963748458487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8969829387962084623}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -10, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1846846265726850503}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5301756537575259603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8969829387962084623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edffad7bcdf13ca4ab9398501b019b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Elenor::Elenor.SpawnPoint
+  kind: 2
+  direction: 3
 --- !u!1 &9090326330229001673
 GameObject:
   m_ObjectHideFlags: 0
@@ -1003,3 +1149,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.SpawnPoint
   kind: 1
+  direction: 0

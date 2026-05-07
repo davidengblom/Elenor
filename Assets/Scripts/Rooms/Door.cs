@@ -3,18 +3,18 @@ using UnityEngine;
 namespace Elenor {
     [RequireComponent(typeof(Collider2D))]
     public class Door : MonoBehaviour {
-        bool _used;
+        [SerializeField] Direction direction;
+
+        public Direction DoorDirection => direction;
+
+        public void Configure(Direction dir) {
+            direction = dir;
+        }
 
         void OnTriggerEnter2D(Collider2D other) {
-            if (_used) return;
             if (!other.CompareTag("Player")) return;
-
-            _used = true;
-
             if (RoomManager.Instance != null) {
-                RoomManager.Instance.GoToNextRoom();
-            } else {
-                Debug.LogWarning("Door triggered but no RoomManager.Instance found.", this);
+                RoomManager.Instance.GoToNeighborInDirection(direction);
             }
         }
     }
