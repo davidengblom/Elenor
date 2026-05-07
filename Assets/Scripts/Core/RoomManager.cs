@@ -1,19 +1,24 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Elenor {
     public class RoomManager : MonoBehaviour {
         public static RoomManager Instance { get; private set; }
 
-        [SerializeField] List<GameObject> roomPrefabs = new();
+        [SerializeField] FloorSO floor;
+
+        int _currentRoomIndex;
 
         RoomController _currentRoom;
 
         public RoomController CurrentRoom => _currentRoom;
 
         public event Action<int> RoomsClearedChanged;
+        public event Action<int, int> RoomChanged; // (currentIndex, totalRooms)
         public int RoomsCleared { get; private set; }
+
+        public int CurrentRoomIndex => _currentRoomIndex;
+        public int FloorRoomCount => floor != null ? floor.RoomCount : 0;
 
         void Awake() {
             if (Instance != null && Instance != this) {
@@ -35,6 +40,14 @@ namespace Elenor {
         }
 
         public void GoToNextRoom() {
+            if (floor == null || floor.RoomCount == 0) return;
+
+            _currentRoomIndex++;
+            if (_currentRoomIndex >= floor.RoomCount) {
+                _currentRoomIndex = 0;
+                Debug.Log($"Floor {floor.DisplayName} cleared. Looping back to start.");
+            }
+
             SpawnRoom();
         }
 
@@ -46,14 +59,14 @@ namespace Elenor {
                 Destroy(_currentRoom.gameObject);
             }
 
-            if (roomPrefabs == null || roomPrefabs.Count == 0) {
-                Debug.LogError("RoomManager: roomPrefabs list is empty.", this);
+            if (floor == null || floor.RoomCount == 0) {
+                Debug.LogError("RoomManager: no Floor assigned, or floor has no rooms.", this);
                 return;
             }
 
-            GameObject prefab = PickRoomPrefab();
+            GameObject prefab = floor.Rooms[_currentRoomIndex];
             if (prefab == null) {
-                Debug.LogError("RoomManager: picked room prefab is null.", this);
+                Debug.LogError($"RoomManager: floor.Rooms[{_currentRoomIndex}] is null. Check the floor asset.", this);
                 return;
             }
 
@@ -66,13 +79,9 @@ namespace Elenor {
 
             _currentRoom.RoomCleared += OnCurrentRoomCleared;
 
-            PlacePlayerAtSpawn();
-        }
+            RoomChanged?.Invoke(_currentRoomIndex, floor.RoomCount);
 
-        GameObject PickRoomPrefab() {
-            // First room is deterministic for now.
-            if (RoomsCleared == 0) return roomPrefabs[0];
-            return roomPrefabs[UnityEngine.Random.Range(0, roomPrefabs.Count)];
+            PlacePlayerAtSpawn();
         }
 
         void PlacePlayerAtSpawn() {

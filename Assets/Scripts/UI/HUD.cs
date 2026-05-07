@@ -7,6 +7,7 @@ namespace Elenor {
         [SerializeField] TMP_Text damageText;
         [SerializeField] TMP_Text speedText;
         [SerializeField] TMP_Text roomsText;
+        [SerializeField] TMP_Text roomIndexText;
 
         PlayerHealth _health;
         PlayerStats _stats;
@@ -27,15 +28,20 @@ namespace Elenor {
                 OnStatsChanged();
             }
             if (RoomManager.Instance != null) {
-                RoomManager.Instance.RoomsClearedChanged += OnRoomsChanged;
-                OnRoomsChanged(RoomManager.Instance.RoomsCleared);
+                RoomManager.Instance.RoomsClearedChanged += OnRoomsClearedChanged;
+                RoomManager.Instance.RoomChanged += OnRoomChanged;
+                OnRoomsClearedChanged(RoomManager.Instance.RoomsCleared);
+                OnRoomChanged(RoomManager.Instance.CurrentRoomIndex, RoomManager.Instance.FloorRoomCount);
             }
         }
 
         void OnDestroy() {
             if (_health != null) _health.HealthChanged -= OnHealthChanged;
             if (_stats != null) _stats.StatsChanged -= OnStatsChanged;
-            if (RoomManager.Instance != null) RoomManager.Instance.RoomsClearedChanged -= OnRoomsChanged;
+            if (RoomManager.Instance != null) {
+                RoomManager.Instance.RoomsClearedChanged -= OnRoomsClearedChanged;
+                RoomManager.Instance.RoomChanged -= OnRoomChanged;
+            } 
         }
 
         void OnHealthChanged(float current, float max) {
@@ -54,9 +60,15 @@ namespace Elenor {
             }
         }
 
-        void OnRoomsChanged(int count) {
+        void OnRoomsClearedChanged(int count) {
             if (roomsText != null) {
                 roomsText.text = $"Rooms Cleared: {count}";
+            }
+        }
+
+        void OnRoomChanged(int currentIndex, int totalRooms) {
+            if (roomIndexText != null) {
+                roomIndexText.text = $"Room {currentIndex + 1} / {totalRooms}";
             }
         }
     }
