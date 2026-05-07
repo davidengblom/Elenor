@@ -24,5 +24,13 @@ namespace Elenor {
             Direction.West => new Vector2Int(-1, 0),
             _ => Vector2Int.zero,
         };
+
+        public static float ToZRotation(this Direction dir) => dir switch {
+            Direction.North => 0f,
+            Direction.East => -90f,
+            Direction.South => 180f,
+            Direction.West => 90f,
+            _ => 0f,
+        };
     }
 }

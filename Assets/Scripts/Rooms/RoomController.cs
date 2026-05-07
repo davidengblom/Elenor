@@ -98,7 +98,7 @@ namespace Elenor {
                     continue;
                 }
 
-                Quaternion rot = Quaternion.Euler(0f, 0f, DoorRotationFor(dir));
+                Quaternion rot = Quaternion.Euler(0f, 0f, dir.ToZRotation());
                 GameObject doorGO = Instantiate(doorPrefab, anchor.transform.position, rot, transform);
                 if (doorGO.TryGetComponent<Door>(out var door)) {
                     door.Configure(dir);
@@ -184,14 +184,5 @@ namespace Elenor {
 
             return sb.ToString();
         }
-
-        // Helper for getting correct door rotation given position and direction
-        static float DoorRotationFor(Direction dir) => dir switch {
-            Direction.North => 0f,
-            Direction.East => -90f,
-            Direction.South => 180f,
-            Direction.West => 90f,
-            _ => 0f,
-        };
     }
 }
