@@ -8,6 +8,9 @@ namespace Elenor {
 
         [SerializeField] FloorSO floor;
 
+        [SerializeField, Tooltip("Distance the player is pushed inward when spawning at a door anchor.")]
+        float doorEntryPushIn = 2.5f;
+
         Vector2Int _currentGridPos;
         Direction? _enteredFrom;
         readonly HashSet<Vector2Int> _clearedRooms = new();
@@ -103,7 +106,7 @@ namespace Elenor {
             if (_enteredFrom.HasValue) {
                 SpawnPoint anchor = _currentRoom.GetDoorAnchor(_enteredFrom.Value);
                 if (anchor != null) {
-                    Vector2 pushIn = -(Vector2)_enteredFrom.Value.Offset() * 2.5f;
+                    Vector2 pushIn = -(Vector2)_enteredFrom.Value.Offset() * doorEntryPushIn;
                     targetPos = anchor.transform.position + (Vector3)pushIn;
                 } else {
                     Debug.LogWarning($"RoomManager: room at {_currentGridPos} has no door anchor for direction {_enteredFrom.Value}.", this);
