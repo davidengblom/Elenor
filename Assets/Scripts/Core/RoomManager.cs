@@ -11,6 +11,7 @@ namespace Elenor {
         Vector2Int _currentGridPos;
         Direction? _enteredFrom;
         readonly HashSet<Vector2Int> _clearedRooms = new();
+        public IReadOnlyCollection<Vector2Int> ClearedRooms => _clearedRooms;
 
         RoomController _currentRoom;
         public RoomController CurrentRoom => _currentRoom;
