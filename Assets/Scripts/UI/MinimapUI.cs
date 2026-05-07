@@ -77,7 +77,7 @@ namespace Elenor {
             var visited = new HashSet<Vector2Int>(RoomManager.Instance.ClearedRooms);
             visited.Add(current);
 
-            foreach ( var kvp in _cells) {
+            foreach (var kvp in _cells) {
                 Vector2Int gridPos = kvp.Key;
                 Image image = kvp.Value;
 
