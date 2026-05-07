@@ -4,7 +4,7 @@ namespace Elenor {
     [RequireComponent(typeof(Collider2D))]
     public class Door : MonoBehaviour {
         [SerializeField] Direction direction;
-        [SerializeField, Tooltip("Time after Configure before this door accepts the player. Prevents unwanted teleportartion.")]
+        [SerializeField, Min(0.05f),Tooltip("Time after Configure before this door accepts the player. Prevents unwanted teleportation.")]
         float armDelay = 0.25f;
 
         float _armedAt;

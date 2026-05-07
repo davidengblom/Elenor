@@ -91,7 +91,10 @@ namespace Elenor {
 
             bool alreadyCleared = _clearedRooms.Contains(_currentGridPos);
             PickupSO pendingReward = alreadyCleared ? PeekPendingReward(_currentGridPos) : null;
-            _currentRoom.Initialize(alreadyCleared, pendingReward);
+            _currentRoom.Initialize(new RoomController.RoomState {
+                IsCleared = alreadyCleared,
+                PendingReward = pendingReward,
+            });
 
             RoomChanged?.Invoke(_currentGridPos);
 

@@ -20,10 +20,15 @@ namespace Elenor {
         public IReadOnlyCollection<GameObject> ActiveEnemies => _activeEnemies;
         public int ActiveEnemyCount => _activeEnemies.Count;
 
-        public void Initialize(bool alreadyCleared, PickupSO pendingReward) {
-            if (alreadyCleared) {
+        public class RoomState {
+            public bool IsCleared;
+            public PickupSO PendingReward;
+        }
+
+        public void Initialize(RoomState state) {
+            if (state.IsCleared) {
                 IsCleared = true;
-                if (pendingReward != null) SpawnPickupForSO(pendingReward);
+                if (state.PendingReward != null) SpawnPickupForSO(state.PendingReward);
                 SpawnDoors();
             } else {
                 SpawnInitialEnemies();
@@ -178,9 +183,9 @@ namespace Elenor {
                 }
             }
 
-                if (enemyCount > 0 && playerCount == 1 && doorCount == 1 && contents != null) {
-                    sb.AppendLine("All required markers and contents present. Room is well formed.");
-                }
+            if (enemyCount > 0 && playerCount == 1 && doorCount >= 1 && contents != null) {
+                sb.AppendLine("All required markers and contents present. Room is well formed.");
+            }
 
             return sb.ToString();
         }

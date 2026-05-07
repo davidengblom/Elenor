@@ -6,7 +6,7 @@ namespace Elenor {
         [Header("Health")]
         [SerializeField] float maxHealth = 3f;
 
-        [Header("Ranged (turret)")]
+        [Header("Ranged")]
         [SerializeField] WeaponSO weapon;
 
         [Header("Movement")]

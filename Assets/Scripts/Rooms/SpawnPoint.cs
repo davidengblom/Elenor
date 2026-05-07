@@ -18,6 +18,8 @@ namespace Elenor {
                 Kind.Door => new Color(0.3f, 1f, 0.4f),   // green
                 _ => Color.white,
             };
+            
+            Gizmos.color = c;
 
             if (kind == Kind.Door) {
                 Vector3 arrow = direction switch {
@@ -30,7 +32,6 @@ namespace Elenor {
                 Gizmos.DrawLine(transform.position, transform.position + arrow * 0.6f);
             }
 
-            Gizmos.color = c;
             Vector3 p = transform.position;
             Gizmos.DrawWireSphere(p, 0.4f);
             Gizmos.DrawLine(p + Vector3.up * 0.4f, p - Vector3.up * 0.4f);
