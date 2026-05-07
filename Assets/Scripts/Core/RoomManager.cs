@@ -21,6 +21,8 @@ namespace Elenor {
         public Vector2Int CurrentGridPos => _currentGridPos;
         public FloorSO Floor => floor;
 
+        readonly Dictionary<Vector2Int, PickupSO> _pendingRewards = new();
+
         void Awake() {
             if (Instance != null && Instance != this) {
                 Destroy(gameObject);
@@ -84,7 +86,8 @@ namespace Elenor {
             _currentRoom.RoomCleared += OnCurrentRoomCleared;
 
             bool alreadyCleared = _clearedRooms.Contains(_currentGridPos);
-            _currentRoom.Initialize(alreadyCleared);
+            PickupSO pendingReward = alreadyCleared ? PeekPendingReward(_currentGridPos) : null;
+            _currentRoom.Initialize(alreadyCleared, pendingReward);
 
             RoomChanged?.Invoke(_currentGridPos);
 
@@ -99,7 +102,7 @@ namespace Elenor {
             if (_enteredFrom.HasValue) {
                 SpawnPoint anchor = _currentRoom.GetDoorAnchor(_enteredFrom.Value);
                 if (anchor != null) {
-                    Vector2 pushIn = -((Vector2)_enteredFrom.Value.Offset()) * 1.5f;
+                    Vector2 pushIn = -(Vector2)_enteredFrom.Value.Offset() * 2.5f;
                     targetPos = anchor.transform.position + (Vector3)pushIn;
                 } else {
                     Debug.LogWarning($"RoomManager: room at {_currentGridPos} has no door anchor for direction {_enteredFrom.Value}.", this);
@@ -130,6 +133,20 @@ namespace Elenor {
             _clearedRooms.Add(_currentGridPos);
             RoomsCleared++;
             RoomsClearedChanged?.Invoke(RoomsCleared);
+        }
+
+        public void RegisterPendingReward(PickupSO reward) {
+            if (reward == null) return;
+            _pendingRewards[_currentGridPos] = reward;
+        }
+
+        public PickupSO PeekPendingReward(Vector2Int pos) {
+            _pendingRewards.TryGetValue(pos, out var so);
+            return so;
+        }
+
+        public void NotifyPickupCollected() {
+            _pendingRewards.Remove(_currentGridPos);
         }
     }
 }

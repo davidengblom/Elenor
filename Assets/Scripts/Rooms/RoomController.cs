@@ -20,9 +20,10 @@ namespace Elenor {
         public IReadOnlyCollection<GameObject> ActiveEnemies => _activeEnemies;
         public int ActiveEnemyCount => _activeEnemies.Count;
 
-        public void Initialize(bool alreadyCleared) {
+        public void Initialize(bool alreadyCleared, PickupSO pendingReward) {
             if (alreadyCleared) {
                 IsCleared = true;
+                if (pendingReward != null) SpawnPickupForSO(pendingReward);
                 SpawnDoors();
             } else {
                 SpawnInitialEnemies();
@@ -54,11 +55,19 @@ namespace Elenor {
             }
         }
 
-        void SpawnReward() {
+        void SpawnPickupForSO(PickupSO so) {
             if (pickupPrefab == null) {
                 Debug.LogWarning($"{name}: no pickupPrefab assigned. Skipping reward.", this);
                 return;
             }
+
+            GameObject go = Instantiate(pickupPrefab, transform.position, Quaternion.identity, transform);
+            if (go.TryGetComponent<Pickup>(out var pickup)) {
+                pickup.Configure(so);
+            }
+        }
+
+        void SpawnReward() {
             if (contents == null || contents.PossiblePickups.Count == 0) {
                 Debug.LogWarning($"{name}: contents has no possible pickups. Skipping reward.", this);
                 return;
@@ -68,10 +77,12 @@ namespace Elenor {
             PickupSO so = pool[UnityEngine.Random.Range(0, pool.Count)];
             if (so == null) return;
 
-            GameObject go = Instantiate(pickupPrefab, transform.position, Quaternion.identity, transform);
-            if (go.TryGetComponent<Pickup>(out var pickup)) {
-                pickup.Configure(so);
+            SpawnPickupForSO(so);
+
+            if (RoomManager.Instance != null) {
+                RoomManager.Instance.RegisterPendingReward(so);
             }
+
         }
 
         void SpawnDoors() {
@@ -88,7 +99,8 @@ namespace Elenor {
                     continue;
                 }
 
-                GameObject doorGO = Instantiate(doorPrefab, anchor.transform.position, Quaternion.identity, transform);
+                Quaternion rot = Quaternion.Euler(0f, 0f, DoorRotationFor(dir));
+                GameObject doorGO = Instantiate(doorPrefab, anchor.transform.position, rot, transform);
                 if (doorGO.TryGetComponent<Door>(out var door)) {
                     door.Configure(dir);
                 }
@@ -173,5 +185,14 @@ namespace Elenor {
 
             return sb.ToString();
         }
+
+        // Helper for getting correct door rotation given position and direction
+        static float DoorRotationFor(Direction dir) => dir switch {
+            Direction.North => 0f,
+            Direction.East => -90f,
+            Direction.South => 180f,
+            Direction.West => 90f,
+            _ => 0f,
+        };
     }
 }
