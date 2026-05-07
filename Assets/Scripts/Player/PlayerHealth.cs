@@ -67,6 +67,6 @@ namespace Elenor {
 
         [ContextMenu("DEBUG: Heal to Full")]
         void DebugHealToFull() => Heal(maxHealth);
-    }
 #endif
+    }
 }

@@ -77,12 +77,11 @@ namespace Elenor {
             PickupSO so = pool[UnityEngine.Random.Range(0, pool.Count)];
             if (so == null) return;
 
-            SpawnPickupForSO(so);
-
             if (RoomManager.Instance != null) {
                 RoomManager.Instance.RegisterPendingReward(so);
             }
 
+            SpawnPickupForSO(so);
         }
 
         void SpawnDoors() {
@@ -167,7 +166,7 @@ namespace Elenor {
             if (playerCount == 0) sb.AppendLine("ERROR: No player spawn point.");
             if (playerCount > 1) sb.AppendLine("WARNING: Multiple player spawn points found. Only the first will be used.");
             if (doorCount == 0) sb.AppendLine("ERROR: No door anchor.");
-            if (doorCount > 1) sb.AppendLine($"WARNING: {doorCount} door anchors. Maximum used is 4 (one per direction).");
+            if (doorCount > 4) sb.AppendLine($"WARNING: {doorCount} door anchors. Maximum used is 4 (one per direction).");
 
             // Check for duplicate door anchors
             var dirs = GetSpawns(SpawnPoint.Kind.Door).Select(sp => sp.DoorDirection).ToList();
