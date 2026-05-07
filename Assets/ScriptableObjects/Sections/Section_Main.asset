@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Section_Main
   m_EditorClassIdentifier: Elenor::Elenor.SectionSO
   displayName: Section
-  floors: []
+  floors:
+  - {fileID: 11400000, guid: 6e3379bef8a7874409f942f5ff3f2a6f, type: 2}

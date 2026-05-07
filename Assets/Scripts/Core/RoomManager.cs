@@ -24,6 +24,7 @@ namespace Elenor {
         public int RoomsCleared { get; private set; }
         public Vector2Int CurrentGridPos => _currentGridPos;
         public FloorSO Floor => _floor;
+        public bool IsCurrentRoomExit => _floor != null && _currentGridPos == _floor.ExitPosition;
 
         readonly Dictionary<Vector2Int, PickupSO> _pendingRewards = new();
 

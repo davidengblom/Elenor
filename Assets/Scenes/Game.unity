@@ -903,8 +903,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1227628813}
   - component: {fileID: 1227628812}
+  - component: {fileID: 1227628814}
   m_Layer: 0
-  m_Name: RoomManager
+  m_Name: Managers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -922,7 +923,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9295175608b8ce549aa210bbbe3472aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.RoomManager
-  floor: {fileID: 11400000, guid: 6e3379bef8a7874409f942f5ff3f2a6f, type: 2}
+  doorEntryPushIn: 2.5
 --- !u!4 &1227628813
 Transform:
   m_ObjectHideFlags: 0
@@ -931,13 +932,26 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1227628811}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1227628814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227628811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 224bf6ac990329d4bbc036b598e71946, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Elenor::Elenor.RunManager
+  currentSection: {fileID: 11400000, guid: 0dd76edebfa435746b53c9c0170daead, type: 2}
 --- !u!1 &1276092226
 GameObject:
   m_ObjectHideFlags: 0
@@ -1979,9 +1993,9 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1227628813}
   - {fileID: 925076687}
   - {fileID: 459613482}
-  - {fileID: 1227628813}
   - {fileID: 3523988098665011915}
   - {fileID: 10611340}
   - {fileID: 519294096}
