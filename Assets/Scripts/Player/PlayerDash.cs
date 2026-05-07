@@ -12,7 +12,6 @@ namespace Elenor {
         PlayerInputReader _input;
         PlayerMovement _movement;
         PlayerHealth _health;
-        Camera _cam;
 
         float _nextDashTime;
         float _dashEndsAt;
@@ -27,7 +26,6 @@ namespace Elenor {
             _input = GetComponent<PlayerInputReader>();
             _movement = GetComponent<PlayerMovement>();
             _health = GetComponent<PlayerHealth>();
-            _cam = Camera.main;
         }
 
         void OnEnable() {
@@ -54,12 +52,8 @@ namespace Elenor {
         
         Vector2 ComputeDashDirection() {
             if (_input.MoveInput.sqrMagnitude > 0.0001f) return _input.MoveInput.normalized;
-
-            // Fall back to aim direction when standing still
-            Vector3 mouse = _input.AimScreenPosition;
-            mouse.z = -_cam.transform.position.z;
-            Vector3 world = _cam.ScreenToWorldPoint(mouse);
-            return ((Vector2)world - (Vector2)transform.position).normalized;
+            if (_input.ShootInput.sqrMagnitude > 0.0001f) return _input.ShootInput.normalized;
+            return Vector2.zero;
         }
 
         void BeginDash(Vector2 dir) {

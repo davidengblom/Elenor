@@ -9,9 +9,8 @@ namespace Elenor {
         public event Action RoomCleared;
 
         [Header("Spawning")]
-        [SerializeField] List<GameObject> initialEnemies = new();
+        [SerializeField] RoomContentsSO contents;
         [SerializeField] GameObject pickupPrefab;
-        [SerializeField] List<PickupSO> possiblePickups = new();
         [SerializeField] GameObject doorPrefab;
 
         public bool IsCleared { get; private set; }
@@ -21,22 +20,34 @@ namespace Elenor {
         public IReadOnlyCollection<GameObject> ActiveEnemies => _activeEnemies;
         public int ActiveEnemyCount => _activeEnemies.Count;
 
-        void Start() {
-            SpawnInitialEnemies();
+        public void Initialize(bool alreadyCleared, PickupSO pendingReward) {
+            if (alreadyCleared) {
+                IsCleared = true;
+                if (pendingReward != null) SpawnPickupForSO(pendingReward);
+                SpawnDoors();
+            } else {
+                SpawnInitialEnemies();
+            }
         }
 
         void SpawnInitialEnemies() {
+            if (contents == null) {
+                Debug.LogWarning($"{name}: no RoomContentsSO assigned. Room will be 'cleared' immediately.", this);
+                return;
+            }
+
+            var enemies = contents.InitialEnemies;
             var spawns = GetEnemySpawns();
             int placed = 0;
 
-            for (int i = 0; i < initialEnemies.Count && i < spawns.Count; i++) {
-                if (initialEnemies[i] == null) continue;
-                Instantiate(initialEnemies[i], spawns[i].transform.position, Quaternion.identity, transform);
+            for (int i = 0; i < enemies.Count && i < spawns.Count; i++) {
+                if (enemies[i] == null) continue;
+                Instantiate(enemies[i], spawns[i].transform.position, Quaternion.identity, transform);
                 placed++;
             }
 
-            if (initialEnemies.Count > spawns.Count) {
-                Debug.LogWarning($"{name}: more initialEnemies ({initialEnemies.Count}) than enemy spawns ({spawns.Count}). Extras ignored.", this);
+            if (enemies.Count > spawns.Count) {
+                Debug.LogWarning($"{name}: more initialEnemies ({enemies.Count}) than enemy spawns ({spawns.Count}). Extras ignored.", this);
             }
 
             if (placed == 0) {
@@ -44,18 +55,11 @@ namespace Elenor {
             }
         }
 
-        void SpawnReward() {
+        void SpawnPickupForSO(PickupSO so) {
             if (pickupPrefab == null) {
                 Debug.LogWarning($"{name}: no pickupPrefab assigned. Skipping reward.", this);
                 return;
             }
-            if (possiblePickups == null || possiblePickups.Count == 0) {
-                Debug.LogWarning($"{name}: possiblePickups is empty. Skipping reward.", this);
-                return;
-            }
-
-            PickupSO so = possiblePickups[UnityEngine.Random.Range(0, possiblePickups.Count)];
-            if (so == null) return;
 
             GameObject go = Instantiate(pickupPrefab, transform.position, Quaternion.identity, transform);
             if (go.TryGetComponent<Pickup>(out var pickup)) {
@@ -63,17 +67,44 @@ namespace Elenor {
             }
         }
 
-        void SpawnDoor() {
+        void SpawnReward() {
+            if (contents == null || contents.PossiblePickups.Count == 0) {
+                Debug.LogWarning($"{name}: contents has no possible pickups. Skipping reward.", this);
+                return;
+            }
+
+            var pool = contents.PossiblePickups;
+            PickupSO so = pool[UnityEngine.Random.Range(0, pool.Count)];
+            if (so == null) return;
+
+            SpawnPickupForSO(so);
+
+            if (RoomManager.Instance != null) {
+                RoomManager.Instance.RegisterPendingReward(so);
+            }
+
+        }
+
+        void SpawnDoors() {
             if (doorPrefab == null) {
-                Debug.LogWarning($"{name}: no doorPrefab assigned. Skipping door.", this);
+                Debug.LogWarning($"{name}: no doorPrefab assigned. Skipping doors.", this);
                 return;
             }
-            SpawnPoint anchor = GetDoorAnchor();
-            if (anchor == null) {
-                Debug.LogWarning($"{name}: no door anchor. Skipping door.", this);
-                return;
+            foreach (Direction dir in System.Enum.GetValues(typeof(Direction))) {
+                if (RoomManager.Instance == null || !RoomManager.Instance.HasNeighbor(dir)) continue;
+
+                SpawnPoint anchor = GetDoorAnchor(dir);
+                if (anchor == null) {
+                    Debug.LogWarning($"{name}: no door anchor for direction {dir}, but neighbor exists.", this);
+                    continue;
+                }
+
+                Quaternion rot = Quaternion.Euler(0f, 0f, DoorRotationFor(dir));
+                GameObject doorGO = Instantiate(doorPrefab, anchor.transform.position, rot, transform);
+                if (doorGO.TryGetComponent<Door>(out var door)) {
+                    door.Configure(dir);
+                }
             }
-            Instantiate(doorPrefab, anchor.transform.position, Quaternion.identity, transform);
         }
 
         public void RegisterEnemy(GameObject enemy) {
@@ -92,7 +123,7 @@ namespace Elenor {
             if (!IsCleared && _activeEnemies.Count == 0) {
                 IsCleared = true;
                 SpawnReward();
-                SpawnDoor();
+                SpawnDoors();
                 RoomCleared?.Invoke();
             }
         }
@@ -103,7 +134,9 @@ namespace Elenor {
 
         public List<SpawnPoint> GetEnemySpawns() => GetSpawns(SpawnPoint.Kind.Enemy);
         public SpawnPoint GetPlayerSpawn() => GetSpawns(SpawnPoint.Kind.Player).FirstOrDefault();
-        public SpawnPoint GetDoorAnchor() => GetSpawns(SpawnPoint.Kind.Door).FirstOrDefault();
+        public SpawnPoint GetDoorAnchor(Direction dir) => GetSpawns(SpawnPoint.Kind.Door).FirstOrDefault(sp => sp.DoorDirection == dir);
+
+        public IEnumerable<SpawnPoint> GetAllDoorAnchors() => GetSpawns(SpawnPoint.Kind.Door);
 
         public string Validate() {
             var sb = new StringBuilder();
@@ -116,17 +149,50 @@ namespace Elenor {
             sb.AppendLine($"Door spawns: {doorCount}");
             sb.AppendLine();
 
+            if (contents == null) {
+                sb.AppendLine("ERROR: No RoomContentsSO assigned.");
+            } else {
+                sb.AppendLine($"Initial enemies in contents: {contents.InitialEnemies.Count}");
+                sb.AppendLine($"Possible pickups in contents: {contents.PossiblePickups.Count}");
+                if (contents.InitialEnemies.Count > enemyCount) {
+                    sb.AppendLine($"WARNING: More initialEnemies ({contents.InitialEnemies.Count}) than enemy spawns ({enemyCount}). Extras will be ignored.");
+                }
+                if (contents.PossiblePickups.Count == 0) {
+                    sb.AppendLine("WARNING: contents has no possible pickups. No reward will spawn.");
+                }
+            }
+            sb.AppendLine();
+
             if (enemyCount == 0) sb.AppendLine("WARNING: No enemy spawn points. Room will be 'cleared' immediately.");
             if (playerCount == 0) sb.AppendLine("ERROR: No player spawn point.");
             if (playerCount > 1) sb.AppendLine("WARNING: Multiple player spawn points found. Only the first will be used.");
             if (doorCount == 0) sb.AppendLine("ERROR: No door anchor.");
-            if (doorCount > 1) sb.AppendLine("WARNING: Multiple door anchors found. Only the first will be used.");
+            if (doorCount > 1) sb.AppendLine($"WARNING: {doorCount} door anchors. Maximum used is 4 (one per direction).");
 
-            if (enemyCount > 0 && playerCount == 1 && doorCount == 1) {
-                sb.AppendLine("All required markers present. Room is well formed.");
+            // Check for duplicate door anchors
+            var dirs = GetSpawns(SpawnPoint.Kind.Door).Select(sp => sp.DoorDirection).ToList();
+            for (int i = 0; i < dirs.Count; i++) {
+                for (int j = i + 1; j < dirs.Count; j++) {
+                    if (dirs[i] == dirs[j]) {
+                        sb.AppendLine($"WARNING: Two door anchors share direction {dirs[i]}. Only the first will be used.");
+                    }
+                }
             }
+
+                if (enemyCount > 0 && playerCount == 1 && doorCount == 1 && contents != null) {
+                    sb.AppendLine("All required markers and contents present. Room is well formed.");
+                }
 
             return sb.ToString();
         }
+
+        // Helper for getting correct door rotation given position and direction
+        static float DoorRotationFor(Direction dir) => dir switch {
+            Direction.North => 0f,
+            Direction.East => -90f,
+            Direction.South => 180f,
+            Direction.West => 90f,
+            _ => 0f,
+        };
     }
 }

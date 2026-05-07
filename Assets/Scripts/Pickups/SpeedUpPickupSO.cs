@@ -6,8 +6,8 @@ namespace Elenor {
         [SerializeField] float speedBonus = 1f;
 
         public override void ApplyTo(GameObject player) {
-            if (player.TryGetComponent<PlayerMovement>(out var movement)) {
-                movement.MoveSpeed += speedBonus;
+            if (player.TryGetComponent<PlayerStats>(out var stats)) {
+                stats.MoveSpeed += speedBonus;
             }
         }
     }

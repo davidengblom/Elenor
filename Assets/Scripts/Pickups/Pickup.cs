@@ -33,6 +33,11 @@ namespace Elenor {
             if (!other.CompareTag("Player")) return;
 
             data.ApplyTo(other.gameObject);
+
+            if (RoomManager.Instance != null) {
+                RoomManager.Instance.NotifyPickupCollected();
+            }
+
             Destroy(gameObject);
         }
     }

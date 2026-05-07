@@ -12,20 +12,20 @@ namespace Elenor.EditorTools {
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Room Markers", EditorStyles.boldLabel);
 
-            int enemy  = room.GetSpawns(SpawnPoint.Kind.Enemy).Count;
+            int enemy = room.GetSpawns(SpawnPoint.Kind.Enemy).Count;
             int player = room.GetSpawns(SpawnPoint.Kind.Player).Count;
-            int door   = room.GetSpawns(SpawnPoint.Kind.Door).Count;
+            int door = room.GetSpawns(SpawnPoint.Kind.Door).Count;
 
-            EditorGUILayout.LabelField("Enemy Spawns",  enemy.ToString());
+            EditorGUILayout.LabelField("Enemy Spawns", enemy.ToString());
             EditorGUILayout.LabelField("Player Spawns", player == 1 ? "Set" : (player == 0 ? "MISSING" : $"{player} (too many)"));
-            EditorGUILayout.LabelField("Door Anchors",  door   == 1 ? "Set" : (door   == 0 ? "MISSING" : $"{door} (too many)"));
+            EditorGUILayout.LabelField("Door Anchors", door   == 1 ? "Set" : (door   == 0 ? "MISSING" : $"{door} (too many)"));
 
             EditorGUILayout.Space();
 
             using (new EditorGUILayout.HorizontalScope()) {
-                if (GUILayout.Button("Add Enemy Spawn"))   CreateMarker(room, SpawnPoint.Kind.Enemy);
-                if (GUILayout.Button("Add Player Spawn"))  CreateMarker(room, SpawnPoint.Kind.Player);
-                if (GUILayout.Button("Add Door Anchor"))   CreateMarker(room, SpawnPoint.Kind.Door);
+                if (GUILayout.Button("Add Enemy Spawn")) CreateMarker(room, SpawnPoint.Kind.Enemy);
+                if (GUILayout.Button("Add Player Spawn")) CreateMarker(room, SpawnPoint.Kind.Player);
+                if (GUILayout.Button("Add Door Anchor")) CreateMarker(room, SpawnPoint.Kind.Door);
             }
 
             EditorGUILayout.Space();

@@ -3,18 +3,24 @@ using UnityEngine;
 namespace Elenor {
     [RequireComponent(typeof(Collider2D))]
     public class Door : MonoBehaviour {
-        bool _used;
+        [SerializeField] Direction direction;
+        [SerializeField, Tooltip("Time after Configure before this door accepts the player. Prevents unwanted teleportartion.")]
+        float armDelay = 0.25f;
+
+        float _armedAt;
+
+        public Direction DoorDirection => direction;
+
+        public void Configure(Direction dir) {
+            direction = dir;
+            _armedAt = Time.time + armDelay;
+        }
 
         void OnTriggerEnter2D(Collider2D other) {
-            if (_used) return;
+            if (Time.time < _armedAt) return;
             if (!other.CompareTag("Player")) return;
-
-            _used = true;
-
             if (RoomManager.Instance != null) {
-                RoomManager.Instance.GoToNextRoom();
-            } else {
-                Debug.LogWarning("Door triggered but no RoomManager.Instance found.", this);
+                RoomManager.Instance.GoToNeighborInDirection(direction);
             }
         }
     }
