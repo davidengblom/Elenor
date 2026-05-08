@@ -7,13 +7,15 @@ namespace Elenor {
     public class SectionClearedScreen : MonoBehaviour {
         [Header("UI References")]
         [SerializeField] GameObject panel;
-        [SerializeField] Button restartButton;
+        [SerializeField] Button restartRunButton;
+        [SerializeField] Button quitToMenuButton;
         [SerializeField] TMP_Text timeText;
         [SerializeField] TMP_Text damageText;
         [SerializeField] TMP_Text upgradesText;
 
         [Header("Scene Flow")]
-        [SerializeField] string bootSceneName = "Boot";
+        [SerializeField] string gameSceneName = "Game";
+        [SerializeField] string mainMenuSceneName = "MainMenu";
 
         void Awake() {
             if (panel != null) panel.SetActive(false);
@@ -26,10 +28,15 @@ namespace Elenor {
                 Debug.LogWarning("SectionClearedScreen: no RunManager found.", this);
             }
 
-            if (restartButton != null) {
-                restartButton.onClick.AddListener(OnRestartClicked);
+            if (restartRunButton != null) {
+                restartRunButton.onClick.AddListener(OnRestartClicked);
             } else {
                 Debug.LogWarning("SectionClearedScreen: no restartButton assigned.", this);
+            }
+            if (quitToMenuButton != null) {
+                quitToMenuButton.onClick.AddListener(OnQuitToMenuClicked);
+            } else {
+                Debug.LogWarning("SectionClearedScreen: no quitToMenuButton assigned.", this);
             }
         }
 
@@ -37,8 +44,8 @@ namespace Elenor {
             if (RunManager.Instance != null) {
                 RunManager.Instance.SectionCompleted -= OnSectionCompleted;
             }
-            if (restartButton != null) {
-                restartButton.onClick.RemoveListener(OnRestartClicked);
+            if (restartRunButton != null) {
+                restartRunButton.onClick.RemoveListener(OnRestartClicked);
             }
         }
 
@@ -79,7 +86,12 @@ namespace Elenor {
 
         void OnRestartClicked() {
             Time.timeScale = 1f; // Resume time
-            SceneManager.LoadScene(bootSceneName);
+            SceneManager.LoadScene(gameSceneName);
+        }
+
+        void OnQuitToMenuClicked() {
+            Time.timeScale = 1f;
+            SceneManager.LoadScene(mainMenuSceneName);
         }
     }
 }
