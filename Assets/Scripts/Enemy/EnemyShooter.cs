@@ -48,7 +48,7 @@ namespace Elenor {
                 Quaternion.Euler(0f, 0f, angle)
             );
 
-            proj.Launch(dir * weapon.ProjectileSpeed, weapon.Damage, weapon.ProjectileLifetime);
+            proj.Launch(dir * weapon.ProjectileSpeed, weapon.Damage, weapon.ProjectileLifetime, weapon.KnockbackForce);
         }
     }
 }

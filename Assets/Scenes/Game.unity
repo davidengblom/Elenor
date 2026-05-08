@@ -814,6 +814,7 @@ GameObject:
   m_Component:
   - component: {fileID: 459613482}
   - component: {fileID: 459613481}
+  - component: {fileID: 459613483}
   m_Layer: 0
   m_Name: CM Camera
   m_TagString: Untagged
@@ -879,6 +880,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &459613483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459613479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseListener
+  ApplyAfter: 2
+  ChannelMask: 1
+  Gain: 1
+  Use2DDistance: 1
+  UseCameraSpace: 1
+  SignalCombinationMode: 0
+  ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &511485920
 GameObject:
   m_ObjectHideFlags: 0
@@ -2479,6 +2504,7 @@ GameObject:
   - component: {fileID: 1227628812}
   - component: {fileID: 1227628814}
   - component: {fileID: 1227628815}
+  - component: {fileID: 1227628816}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -2539,6 +2565,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 354e07ebea1cbb74bab8d2be44b8ba62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.RunStats
+--- !u!114 &1227628816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227628811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f9ee6d1ca29c1b4888029c1b13364dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Elenor::Elenor.Hitstop
+  defaultDuration: 0.06
 --- !u!1 &1276092226
 GameObject:
   m_ObjectHideFlags: 0

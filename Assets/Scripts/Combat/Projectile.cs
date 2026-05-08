@@ -6,15 +6,19 @@ namespace Elenor {
     public class Projectile : MonoBehaviour {
         Rigidbody2D _rb;
         float _damage;
+        float _knockback;
+        Vector2 _direction;
         float _despawnAt;
 
         void Awake() {
             _rb = GetComponent<Rigidbody2D>();
         }
 
-        public void Launch(Vector2 velocity, float damage, float lifetime) {
+        public void Launch(Vector2 velocity, float damage, float lifetime, float knockback = 0f) {
             _damage = damage;
+            _knockback = knockback;
             _rb.linearVelocity = velocity;
+            _direction = velocity.sqrMagnitude > 0f ? velocity.normalized : Vector2.zero;
             _despawnAt = Time.time + lifetime;
         }
 
@@ -24,7 +28,8 @@ namespace Elenor {
 
         void OnCollisionEnter2D(Collision2D collision) {
             if (collision.collider.TryGetComponent<IDamageable>(out var dmg)) {
-                dmg.TakeDamage(_damage);
+                Vector2 impulse = _direction * _knockback;
+                dmg.TakeDamage(_damage, impulse);
             }
 
             Destroy(gameObject);

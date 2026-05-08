@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Elenor::Elenor.WeaponSO
   projectilePrefab: {fileID: 3529108683424768763, guid: b8c4a21de53abeb4a8d662503d66fdda, type: 3}
   damage: 1
+  knockbackForce: 0.1
   fireRate: 4
   projectileSpeed: 12
   projectileLifetime: 1.5

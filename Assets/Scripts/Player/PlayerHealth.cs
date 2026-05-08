@@ -17,6 +17,7 @@ namespace Elenor {
 
         public event Action<float, float> HealthChanged;
         public event Action Died;
+        public event Action<float> Damaged;
 
         public float MaxHealth {
             get => maxHealth;
@@ -35,12 +36,13 @@ namespace Elenor {
             HealthChanged?.Invoke(_current, maxHealth);
         }
 
-        public void TakeDamage(float amount) {
+        public void TakeDamage(float amount, Vector2 hitImpulse = default) {
             if (!IsAlive || IsInvulnerable || amount <= 0f) return;
 
             _current = Mathf.Max(0f, _current - amount);
             _invulnUntil = Time.time + hitInvulnerability;
             HealthChanged?.Invoke(_current, maxHealth);
+            Damaged?.Invoke(amount);
 
             if (_current <= 0f) Die();
         }
