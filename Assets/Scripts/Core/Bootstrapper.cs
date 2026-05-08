@@ -3,14 +3,14 @@ using UnityEngine.SceneManagement;
 
 namespace Elenor {
     public class Bootstrapper : MonoBehaviour {
-        [SerializeField] string gameSceneName = "Game";
+        [SerializeField] string mainMenuSceneName = "MainMenu";
 
         void Awake() {
             Time.timeScale = 1f;
         }
 
         void Start() {
-            SceneManager.LoadScene(gameSceneName);
+            SceneManager.LoadScene(mainMenuSceneName);
         }
     }
 }
