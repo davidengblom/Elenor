@@ -9,12 +9,22 @@ namespace Elenor {
 
         float _nextFireTime;
 
-        void Start() {
+        void Awake() {
+            Init(data);
+        }
+
+        public void Init(EnemySO so) {
+            data = so;
+            if (so == null || !so.IsRanged) {
+                enabled = false;
+                return;
+            }
+            enabled = true;
             _nextFireTime = Time.time + Random.Range(0f, startupJitter);
         }
 
         void Update() {
-            if (data == null || data.Weapon == null) return;
+            if (data == null || !data.IsRanged) return;
 
             Transform player = PlayerLocator.Player;
             if (player == null) return;
@@ -38,7 +48,7 @@ namespace Elenor {
                 Quaternion.Euler(0f, 0f, angle)
             );
 
-            proj.Launch(dir * weapon.ProjectileSpeed, weapon.Damage, weapon.ProjectileLifetime);
+            proj.Launch(dir * weapon.ProjectileSpeed, weapon.Damage, weapon.ProjectileLifetime, weapon.KnockbackForce);
         }
     }
 }

@@ -4,9 +4,14 @@ using UnityEngine.SceneManagement;
 
 namespace Elenor {
     public class DeathScreen : MonoBehaviour {
+        [Header("UI References")]
         [SerializeField] GameObject panel;
-        [SerializeField] Button restartButton;
-        [SerializeField] string bootSceneName = "Boot";
+        [SerializeField] Button restartRunButton;
+        [SerializeField] Button quitToMenuButton;
+
+        [Header("Scene Flow")]
+        [SerializeField] string gameSceneName = "Game";
+        [SerializeField] string mainMenuSceneName = "MainMenu";
 
         PlayerHealth _health;
 
@@ -24,16 +29,22 @@ namespace Elenor {
                 Debug.LogWarning("DeathScreen: no PlayerHealth component found.", this);
             }
 
-            if (restartButton != null) {
-                restartButton.onClick.AddListener(OnRestartClicked);
+            if (restartRunButton != null) {
+                restartRunButton.onClick.AddListener(OnRestartClicked);
             } else {
                 Debug.LogWarning("DeathScreen: no restartButton assigned.", this);
+            }
+
+            if (quitToMenuButton != null) {
+                quitToMenuButton.onClick.AddListener(OnQuitToMenuClicked);
+            } else {
+                Debug.LogWarning("DeathScreen: no quitToMenuButton assigned.", this);
             }
         }
 
         void OnDestroy() {
             if (_health != null) _health.Died -= OnPlayerDied;
-            if (restartButton != null) restartButton.onClick.RemoveListener(OnRestartClicked);
+            if (restartRunButton != null) restartRunButton.onClick.RemoveListener(OnRestartClicked);
         }
 
         void OnPlayerDied() {
@@ -43,7 +54,12 @@ namespace Elenor {
 
         void OnRestartClicked() {
             Time.timeScale = 1f; // Resume time
-            SceneManager.LoadScene(bootSceneName);
+            SceneManager.LoadScene(gameSceneName);
+        }
+
+        void OnQuitToMenuClicked() {
+            Time.timeScale = 1f;
+            SceneManager.LoadScene(mainMenuSceneName);
         }
     }
 }

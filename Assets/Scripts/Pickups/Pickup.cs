@@ -31,6 +31,7 @@ namespace Elenor {
         void OnTriggerEnter2D(Collider2D other) {
             if (data == null) return;
             if (!other.CompareTag("Player")) return;
+            if (!data.CanApplyTo(other.gameObject)) return;
 
             data.ApplyTo(other.gameObject);
 

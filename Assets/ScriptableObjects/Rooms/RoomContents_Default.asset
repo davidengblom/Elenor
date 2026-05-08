@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: RoomContents_Default
   m_EditorClassIdentifier: Elenor::Elenor.RoomContentsSO
   initialEnemies:
-  - {fileID: 7076252358195883680, guid: 3001066f239895249a1a1f06f500391e, type: 3}
-  - {fileID: 7076252358195883680, guid: 3001066f239895249a1a1f06f500391e, type: 3}
-  - {fileID: 7076252358195883680, guid: 3001066f239895249a1a1f06f500391e, type: 3}
-  - {fileID: 7076252358195883680, guid: 3001066f239895249a1a1f06f500391e, type: 3}
+  - {fileID: 11400000, guid: f5bb032e86a8e8e49a91083e7d65f1dc, type: 2}
+  - {fileID: 11400000, guid: f5bb032e86a8e8e49a91083e7d65f1dc, type: 2}
+  - {fileID: 11400000, guid: f5bb032e86a8e8e49a91083e7d65f1dc, type: 2}
+  - {fileID: 11400000, guid: f5bb032e86a8e8e49a91083e7d65f1dc, type: 2}
   possiblePickups:
   - {fileID: 11400000, guid: ceea4616310992d468819a90dcc462f2, type: 2}
   - {fileID: 11400000, guid: 6bf2c2dd1a2bd2d4a86113cdef2aa46d, type: 2}

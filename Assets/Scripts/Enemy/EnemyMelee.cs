@@ -4,11 +4,24 @@ namespace Elenor {
     public class EnemyMelee : MonoBehaviour {
         [SerializeField] EnemySO data;
 
-        void OnTriggerStay2D(Collider2D other) {
-            if (data == null || data.ContactDamage <= 0f) return;
-            if (!other.CompareTag("Player")) return;
+        void Awake() {
+            Init(data);
+        }
 
-            if (other.TryGetComponent<IDamageable>(out var dmg)) {
+        public void Init(EnemySO so) {
+            data = so;
+            if (so == null || !so.IsMelee) {
+                enabled = false;
+                return;
+            }
+            enabled = true;
+        }
+
+        void OnCollisionStay2D(Collision2D collision) {
+            if (data == null || !data.IsMelee) return;
+            if (!collision.collider.CompareTag("Player")) return;
+
+            if (collision.collider.TryGetComponent<IDamageable>(out var dmg)) {
                 dmg.TakeDamage(data.ContactDamage);
             }
         }

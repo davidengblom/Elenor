@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Elenor {
     /// <summary>
     /// Anything that can take damage. Implementers are responsible for their own
@@ -9,6 +11,7 @@ namespace Elenor {
         /// dead, currently invulnerable or the amount is zero or negative.
         /// </summary>
         /// <param name="amount">Damage points to apply.</param>
-        void TakeDamage(float amount);
+        /// <param name="hitImpulse">
+        void TakeDamage(float amount, Vector2 hitImpulse = default);
     }
 }

@@ -39,7 +39,7 @@ namespace Elenor {
             );
 
             float dmg = weapon.Damage * (_stats != null ? _stats.DamageMultiplier : 1f);
-            proj.Launch(dir * weapon.ProjectileSpeed, dmg, weapon.ProjectileLifetime);
+            proj.Launch(dir * weapon.ProjectileSpeed, dmg, weapon.ProjectileLifetime, weapon.KnockbackForce);
         }
 
         [ContextMenu("Debug: Log Damage")]

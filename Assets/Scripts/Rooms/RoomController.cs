@@ -10,8 +10,10 @@ namespace Elenor {
 
         [Header("Spawning")]
         [SerializeField] RoomContentsSO contents;
+        [SerializeField] GameObject enemyBasePrefab;
         [SerializeField] GameObject pickupPrefab;
         [SerializeField] GameObject doorPrefab;
+        [SerializeField] GameObject exitDoorPrefab;
 
         public bool IsCleared { get; private set; }
 
@@ -25,7 +27,9 @@ namespace Elenor {
             public PickupSO PendingReward;
         }
 
-        public void Initialize(RoomState state) {
+        public void Initialize(RoomState state, RoomContentsSO contentsOverride = null) {
+            if (contentsOverride != null) contents = contentsOverride;
+            
             if (state.IsCleared) {
                 IsCleared = true;
                 if (state.PendingReward != null) SpawnPickupForSO(state.PendingReward);
@@ -40,6 +44,10 @@ namespace Elenor {
                 Debug.LogWarning($"{name}: no RoomContentsSO assigned. Room will be 'cleared' immediately.", this);
                 return;
             }
+            if (enemyBasePrefab == null) {
+                Debug.LogWarning($"{name}: no enemyBasePrefab assigned. Could not spawn enemies.", this);
+                return;
+            }
 
             var enemies = contents.InitialEnemies;
             var spawns = GetEnemySpawns();
@@ -47,7 +55,13 @@ namespace Elenor {
 
             for (int i = 0; i < enemies.Count && i < spawns.Count; i++) {
                 if (enemies[i] == null) continue;
-                Instantiate(enemies[i], spawns[i].transform.position, Quaternion.identity, transform);
+
+                GameObject go = Instantiate(enemyBasePrefab, spawns[i].transform.position, Quaternion.identity, transform);
+                if (go.TryGetComponent<EnemyBootstrapper>(out var boot)) {
+                    boot.Configure(enemies[i]);
+                } else {
+                    Debug.LogWarning($"{name}: enemyBasePrefab is missing an EnemyBootstrapper component.", this);
+                }
                 placed++;
             }
 
@@ -94,7 +108,7 @@ namespace Elenor {
                 Debug.LogWarning($"{name}: no doorPrefab assigned. Skipping doors.", this);
                 return;
             }
-            foreach (Direction dir in System.Enum.GetValues(typeof(Direction))) {
+            foreach (Direction dir in Enum.GetValues(typeof(Direction))) {
                 if (RoomManager.Instance == null || !RoomManager.Instance.HasNeighbor(dir)) continue;
 
                 SpawnPoint anchor = GetDoorAnchor(dir);
@@ -108,6 +122,28 @@ namespace Elenor {
                 if (doorGO.TryGetComponent<Door>(out var door)) {
                     door.Configure(dir);
                 }
+            }
+
+            if (RoomManager.Instance != null && RoomManager.Instance.IsCurrentRoomExit) {
+                SpawnExitDoor();
+            }
+        }
+
+        void SpawnExitDoor() {
+            if (exitDoorPrefab == null) {
+                Debug.LogWarning($"{name}: this is the floor's exit room but no exitDoorPrefab is assigned. Skipping exit door.", this);
+                return;
+            }
+            SpawnPoint anchor = GetExitAnchor();
+            if (anchor == null) {
+                Debug.LogWarning($"{name}: this is the floor's exit room but no Exit spawn anchor. Skipping exit door.", this);
+                return;
+            }
+
+            Quaternion rot = Quaternion.Euler(0f, 0f, anchor.DoorDirection.ToZRotation());
+            GameObject exitGO = Instantiate(exitDoorPrefab, anchor.transform.position, rot, transform);
+            if (exitGO.TryGetComponent<ExitDoor>(out var exitDoor)) {
+                exitDoor.Configure(anchor.DoorDirection);
             }
         }
 
@@ -139,6 +175,7 @@ namespace Elenor {
         public List<SpawnPoint> GetEnemySpawns() => GetSpawns(SpawnPoint.Kind.Enemy);
         public SpawnPoint GetPlayerSpawn() => GetSpawns(SpawnPoint.Kind.Player).FirstOrDefault();
         public SpawnPoint GetDoorAnchor(Direction dir) => GetSpawns(SpawnPoint.Kind.Door).FirstOrDefault(sp => sp.DoorDirection == dir);
+        public SpawnPoint GetExitAnchor() => GetSpawns(SpawnPoint.Kind.Exit).FirstOrDefault();
 
         public IEnumerable<SpawnPoint> GetAllDoorAnchors() => GetSpawns(SpawnPoint.Kind.Door);
 
@@ -147,10 +184,12 @@ namespace Elenor {
             int enemyCount = GetSpawns(SpawnPoint.Kind.Enemy).Count;
             int playerCount = GetSpawns(SpawnPoint.Kind.Player).Count;
             int doorCount = GetSpawns(SpawnPoint.Kind.Door).Count;
+            int exitCount = GetSpawns(SpawnPoint.Kind.Exit).Count;
 
             sb.AppendLine($"Enemy spawns: {enemyCount}");
             sb.AppendLine($"Player spawns: {playerCount}");
             sb.AppendLine($"Door spawns: {doorCount}");
+            sb.AppendLine($"Exit spawns: {exitCount}");
             sb.AppendLine();
 
             if (contents == null) {
@@ -172,6 +211,7 @@ namespace Elenor {
             if (playerCount > 1) sb.AppendLine("WARNING: Multiple player spawn points found. Only the first will be used.");
             if (doorCount == 0) sb.AppendLine("ERROR: No door anchor.");
             if (doorCount > 4) sb.AppendLine($"WARNING: {doorCount} door anchors. Maximum used is 4 (one per direction).");
+            if (exitCount > 1) sb.AppendLine($"WARNING: {exitCount} exit anchors. Only the first will be used.");
 
             // Check for duplicate door anchors
             var dirs = GetSpawns(SpawnPoint.Kind.Door).Select(sp => sp.DoorDirection).ToList();

@@ -17,8 +17,8 @@ namespace Elenor {
         readonly Dictionary<Vector2Int, Image> _cells = new();
 
         void Start() {
-            if (RoomManager.Instance == null || RoomManager.Instance.Floor == null) {
-                Debug.LogWarning("MinimapUI: no RoomManager or Floor available.", this);
+            if (RoomManager.Instance == null) {
+                Debug.LogWarning("MinimapUI: no RoomManager available.", this);
                 return;
             }
             if (container == null) {
@@ -26,13 +26,18 @@ namespace Elenor {
                 return;
             }
 
-            BuildCells();
+            RoomManager.Instance.FloorChanged += OnFloorChanged;
             RoomManager.Instance.RoomChanged += OnRoomChanged;
-            Refresh();
+
+            // If RunManager.Start ran first, the floor is already loaded
+            if (RoomManager.Instance.Floor != null) {
+                OnFloorChanged(RoomManager.Instance.Floor);
+            }
         }
 
         void OnDestroy() {
             if (RoomManager.Instance != null) {
+                RoomManager.Instance.FloorChanged -= OnFloorChanged;
                 RoomManager.Instance.RoomChanged -= OnRoomChanged;
             }
         }
@@ -68,7 +73,20 @@ namespace Elenor {
             }
         }
 
+        void ClearCells() {
+            foreach (var img in _cells.Values) {
+                if (img != null) Destroy(img.gameObject);
+            }
+            _cells.Clear();
+        }
+
         void OnRoomChanged(Vector2Int pos) {
+            Refresh();
+        }
+
+        void OnFloorChanged(FloorSO floor) {
+            ClearCells();
+            BuildCells();
             Refresh();
         }
 
@@ -77,7 +95,7 @@ namespace Elenor {
             var visited = new HashSet<Vector2Int>(RoomManager.Instance.ClearedRooms);
             visited.Add(current);
 
-            foreach ( var kvp in _cells) {
+            foreach (var kvp in _cells) {
                 Vector2Int gridPos = kvp.Key;
                 Image image = kvp.Value;
 

@@ -6,11 +6,10 @@ namespace Elenor {
     public class RoomManager : MonoBehaviour {
         public static RoomManager Instance { get; private set; }
 
-        [SerializeField] FloorSO floor;
-
         [SerializeField, Tooltip("Distance the player is pushed inward when spawning at a door anchor.")]
         float doorEntryPushIn = 2.5f;
 
+        FloorSO _floor;
         Vector2Int _currentGridPos;
         Direction? _enteredFrom;
         readonly HashSet<Vector2Int> _clearedRooms = new();
@@ -21,9 +20,11 @@ namespace Elenor {
 
         public event Action<int> RoomsClearedChanged;
         public event Action<Vector2Int> RoomChanged;
+        public event Action<FloorSO> FloorChanged;
         public int RoomsCleared { get; private set; }
         public Vector2Int CurrentGridPos => _currentGridPos;
-        public FloorSO Floor => floor;
+        public FloorSO Floor => _floor;
+        public bool IsCurrentRoomExit => _floor != null && _currentGridPos == _floor.ExitPosition;
 
         readonly Dictionary<Vector2Int, PickupSO> _pendingRewards = new();
 
@@ -42,20 +43,26 @@ namespace Elenor {
             if (Instance == this) Instance = null;
         }
 
-        void Start() {
-            if (floor == null) {
-                Debug.LogError("RoomManager: no Floor assigned.", this);
+        public void LoadFloor(FloorSO newFloor) {
+            if (newFloor == null) {
+                Debug.LogError("RoomManager: LoadFloor called with null floor.", this);
                 return;
             }
-            _currentGridPos = floor.StartPosition;
+
+            _floor = newFloor;
+            _currentGridPos = _floor.StartPosition;
             _enteredFrom = null;
+            _clearedRooms.Clear();
+            _pendingRewards.Clear();
+
+            FloorChanged?.Invoke(_floor);
             SpawnRoom();
         }
 
         public void GoToNeighborInDirection(Direction dir) {
-            if (floor == null) return;
+            if (_floor == null) return;
             Vector2Int target = _currentGridPos + dir.Offset();
-            if (!floor.HasRoomAt(target)) {
+            if (!_floor.HasRoomAt(target)) {
                 Debug.LogWarning($"RoomManager: no room at {target} (going {dir} from {_currentGridPos}).", this);
                 return;
             }
@@ -64,7 +71,7 @@ namespace Elenor {
             SpawnRoom();
         }
 
-        public bool HasNeighbor(Direction dir) => floor != null && floor.HasRoomAt(_currentGridPos + dir.Offset());
+        public bool HasNeighbor(Direction dir) => _floor != null && _floor.HasRoomAt(_currentGridPos + dir.Offset());
 
         void SpawnRoom() {
             ClearProjectiles();
@@ -74,7 +81,7 @@ namespace Elenor {
                 Destroy(_currentRoom.gameObject);
             }
 
-            FloorRoomEntry entry = floor.FindRoomAt(_currentGridPos);
+            FloorRoomEntry entry = _floor.FindRoomAt(_currentGridPos);
             if (entry == null || entry.roomPrefab == null) {
                 Debug.LogError($"RoomManager: no valid room at {_currentGridPos}.", this);
                 return;
@@ -94,7 +101,7 @@ namespace Elenor {
             _currentRoom.Initialize(new RoomController.RoomState {
                 IsCleared = alreadyCleared,
                 PendingReward = pendingReward,
-            });
+            }, entry.contentsOverride);
 
             RoomChanged?.Invoke(_currentGridPos);
 

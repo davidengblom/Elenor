@@ -9,5 +9,10 @@ namespace Elenor {
         public Color DisplayColor => displayColor;
 
         public abstract void ApplyTo(GameObject player);
+
+        /// <summary>
+        /// Returns false when the pickup effect should not be applied to the player.
+        /// </summary>
+        public virtual bool CanApplyTo(GameObject player) => true;
     }
 }

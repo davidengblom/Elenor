@@ -7,6 +7,8 @@ namespace Elenor {
     public class FloorRoomEntry {
         public GameObject roomPrefab;
         public Vector2Int gridPosition;
+        [Tooltip("Optional. Overrides the prefab's default RoomContentsSO.")]
+        public RoomContentsSO contentsOverride;
     }
 
     [CreateAssetMenu(menuName = "Elenor/Floors/Floor", fileName = "Floor_")]
@@ -14,10 +16,13 @@ namespace Elenor {
         [SerializeField] string displayName = "Floor";
         [SerializeField, Tooltip("Player starts here. Must match a roomPrefab entry's gridPosition.")]
         Vector2Int startPosition;
+        [SerializeField, Tooltip("The exit-room grid position. Must match a roomPrefab entry's gridPosition.")]
+        Vector2Int exitPosition;
         [SerializeField] List<FloorRoomEntry> rooms = new();
 
         public string DisplayName => displayName;
         public Vector2Int StartPosition => startPosition;
+        public Vector2Int ExitPosition => exitPosition;
         public IReadOnlyList<FloorRoomEntry> Rooms => rooms;
         public int RoomCount => rooms.Count;
 

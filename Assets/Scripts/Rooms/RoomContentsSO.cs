@@ -8,12 +8,12 @@ namespace Elenor {
     [CreateAssetMenu(menuName = "Elenor/Rooms/Room Contents", fileName = "RoomContents_")]
     public class RoomContentsSO : ScriptableObject {
         [SerializeField, Tooltip("Enemy prefabs to spawn, indexed against the room's enemy spawn points in hierarchy order.")]
-        List<GameObject> initialEnemies = new();
+        List<EnemySO> initialEnemies = new();
 
         [SerializeField, Tooltip("Pool the cleared-room reward is drawn from at random.")]
         List<PickupSO> possiblePickups = new();
 
-        public IReadOnlyList<GameObject> InitialEnemies => initialEnemies;
+        public IReadOnlyList<EnemySO> InitialEnemies => initialEnemies;
         public IReadOnlyList<PickupSO> PossiblePickups => possiblePickups;
     }
 }
