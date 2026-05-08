@@ -2504,7 +2504,6 @@ GameObject:
   - component: {fileID: 1227628812}
   - component: {fileID: 1227628814}
   - component: {fileID: 1227628815}
-  - component: {fileID: 1227628816}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -2565,19 +2564,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 354e07ebea1cbb74bab8d2be44b8ba62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.RunStats
---- !u!114 &1227628816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1227628811}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f9ee6d1ca29c1b4888029c1b13364dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Elenor::Elenor.Hitstop
-  defaultDuration: 0.06
 --- !u!1 &1276092226
 GameObject:
   m_ObjectHideFlags: 0
