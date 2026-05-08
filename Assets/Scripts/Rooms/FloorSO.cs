@@ -7,6 +7,8 @@ namespace Elenor {
     public class FloorRoomEntry {
         public GameObject roomPrefab;
         public Vector2Int gridPosition;
+        [Tooltip("Optional. Overrides the prefab's default RoomContentsSO.")]
+        public RoomContentsSO contentsOverride;
     }
 
     [CreateAssetMenu(menuName = "Elenor/Floors/Floor", fileName = "Floor_")]

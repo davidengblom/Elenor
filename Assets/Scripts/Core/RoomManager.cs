@@ -101,7 +101,7 @@ namespace Elenor {
             _currentRoom.Initialize(new RoomController.RoomState {
                 IsCleared = alreadyCleared,
                 PendingReward = pendingReward,
-            });
+            }, entry.contentsOverride);
 
             RoomChanged?.Invoke(_currentGridPos);
 

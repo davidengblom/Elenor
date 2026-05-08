@@ -27,7 +27,9 @@ namespace Elenor {
             public PickupSO PendingReward;
         }
 
-        public void Initialize(RoomState state) {
+        public void Initialize(RoomState state, RoomContentsSO contentsOverride = null) {
+            if (contentsOverride != null) contents = contentsOverride;
+            
             if (state.IsCleared) {
                 IsCleared = true;
                 if (state.PendingReward != null) SpawnPickupForSO(state.PendingReward);
