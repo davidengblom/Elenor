@@ -69,7 +69,6 @@ namespace Elenor {
         }
 
         void CompleteSection() {
-            Debug.Log($"RunManager: section completed. (placeholder)", this);
             SectionCompleted?.Invoke();
         }
 
