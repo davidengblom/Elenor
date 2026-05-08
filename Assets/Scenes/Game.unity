@@ -602,6 +602,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Elenor::Elenor.SectionClearedScreen
   panel: {fileID: 1214934219}
   restartButton: {fileID: 1087687625}
+  timeText: {fileID: 0}
+  damageText: {fileID: 0}
+  upgradesText: {fileID: 0}
   bootSceneName: Boot
 --- !u!1 &925076684
 GameObject:
@@ -1119,6 +1122,7 @@ GameObject:
   - component: {fileID: 1227628813}
   - component: {fileID: 1227628812}
   - component: {fileID: 1227628814}
+  - component: {fileID: 1227628815}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -1167,6 +1171,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.RunManager
   currentSection: {fileID: 11400000, guid: 0dd76edebfa435746b53c9c0170daead, type: 2}
+--- !u!114 &1227628815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227628811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354e07ebea1cbb74bab8d2be44b8ba62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Elenor::Elenor.RunStats
 --- !u!1 &1276092226
 GameObject:
   m_ObjectHideFlags: 0
