@@ -10,7 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01fd9542dfd088943afb5e74563589b4, type: 3}
-  m_Name: Enemy_Turrent_SO
+  m_Name: Enemy_Chaser_F3
   m_EditorClassIdentifier: Elenor::Elenor.EnemySO
-  maxHealth: 3
-  weapon: {fileID: 11400000, guid: 54b43491c24599e4ea3f9415dfdb4ecb, type: 2}
+  displayName: Chaser
+  sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
+  tint: {r: 1, g: 0.39, b: 0.1, a: 1}
+  scale: 1
+  maxHealth: 7
+  moveSpeed: 4
+  weapon: {fileID: 0}
+  contactDamage: 1.5

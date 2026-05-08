@@ -13,7 +13,12 @@ namespace Elenor {
         public bool IsAlive => _current > 0f;
 
         void Awake() {
-            _current = data != null ? data.MaxHealth : fallbackMaxHealth;
+            Init(data);
+        }
+
+        public void Init(EnemySO so) {
+            data = so;
+            _current = so != null ? so.MaxHealth : fallbackMaxHealth;
         }
 
         void OnEnable() {
@@ -32,7 +37,6 @@ namespace Elenor {
         }
 
         void Die() {
-            // Destroy is deferred to end of frame. OnDisable will then fire and unregister enemy.
             Destroy(gameObject);
         }
     }

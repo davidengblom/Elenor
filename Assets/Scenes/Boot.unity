@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9639e00d2f864454a8449dad97a6a4a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.Bootstrapper
-  gameSceneName: Game
+  mainMenuSceneName: MainMenu
 --- !u!4 &222918895
 Transform:
   m_ObjectHideFlags: 0

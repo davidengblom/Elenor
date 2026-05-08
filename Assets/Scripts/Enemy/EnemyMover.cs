@@ -9,11 +9,21 @@ namespace Elenor {
 
         void Awake() {
             _rb = GetComponent<Rigidbody2D>();
+            Init(data);
+        }
+
+        public void Init(EnemySO so) {
+            data = so;
+            if (so == null || so.IsStationary) {
+                enabled = false;
+                if (_rb != null) _rb.linearVelocity = Vector2.zero;
+                return;
+            }
+            enabled = true;
         }
 
         void FixedUpdate() {
-            if (data == null || data.MoveSpeed <= 0f) {
-
+            if (data == null || data.IsStationary) {
                 _rb.linearVelocity = Vector2.zero;
                 return;
             }

@@ -10,6 +10,7 @@ namespace Elenor {
 
         [Header("Spawning")]
         [SerializeField] RoomContentsSO contents;
+        [SerializeField] GameObject enemyBasePrefab;
         [SerializeField] GameObject pickupPrefab;
         [SerializeField] GameObject doorPrefab;
         [SerializeField] GameObject exitDoorPrefab;
@@ -41,6 +42,10 @@ namespace Elenor {
                 Debug.LogWarning($"{name}: no RoomContentsSO assigned. Room will be 'cleared' immediately.", this);
                 return;
             }
+            if (enemyBasePrefab == null) {
+                Debug.LogWarning($"{name}: no enemyBasePrefab assigned. Could not spawn enemies.", this);
+                return;
+            }
 
             var enemies = contents.InitialEnemies;
             var spawns = GetEnemySpawns();
@@ -48,7 +53,13 @@ namespace Elenor {
 
             for (int i = 0; i < enemies.Count && i < spawns.Count; i++) {
                 if (enemies[i] == null) continue;
-                Instantiate(enemies[i], spawns[i].transform.position, Quaternion.identity, transform);
+
+                GameObject go = Instantiate(enemyBasePrefab, spawns[i].transform.position, Quaternion.identity, transform);
+                if (go.TryGetComponent<EnemyBootstrapper>(out var boot)) {
+                    boot.Configure(enemies[i]);
+                } else {
+                    Debug.LogWarning($"{name}: enemyBasePrefab is missing an EnemyBootstrapper component.", this);
+                }
                 placed++;
             }
 

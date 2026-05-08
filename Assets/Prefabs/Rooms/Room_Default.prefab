@@ -516,8 +516,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.RoomController
   contents: {fileID: 11400000, guid: 88baef095ba44d74a909b93581efcc65, type: 2}
+  enemyBasePrefab: {fileID: 8412602562813439139, guid: 7975b33d1050e7a41b320483f16a0636, type: 3}
   pickupPrefab: {fileID: 2247213125671513883, guid: 426f85d77beab9f45be9198f5a9c03f4, type: 3}
   doorPrefab: {fileID: 171544710038563069, guid: 12fb946adb436544b9fd0b17f961b73b, type: 3}
+  exitDoorPrefab: {fileID: 0}
 --- !u!1 &4326104940326505006
 GameObject:
   m_ObjectHideFlags: 0
