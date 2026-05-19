@@ -93,6 +93,7 @@ namespace Elenor {
             }
             if (RunManager.Instance == null || RunManager.Instance.CurrentFloor == null) {
                 Debug.Log($"{name}: no current floor. Skipping reward.", this);
+                return;
             }
 
             var allowed = RunManager.Instance.CurrentFloor.AllowedRarities;
