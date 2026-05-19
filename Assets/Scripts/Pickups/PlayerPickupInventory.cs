@@ -30,7 +30,7 @@ namespace Elenor {
             int newLevel = currentLevel + 1;
             _levels[pickup] = newLevel;
 
-            if (currentLevel == 1) {
+            if (currentLevel == 0) {
                 IBehaviorModifier modifier = (IBehaviorModifier)gameObject.AddComponent(pickup.ModifierType);
                 modifier.Level = newLevel;
                 pickup.ConfigureModifier(modifier, newLevel);
@@ -46,5 +46,21 @@ namespace Elenor {
 
             return true;
         }
+#if UNITY_EDITOR
+        [ContextMenu("DEBUG: Acquire random from registry")]
+        void DebugAcquireRandom() {
+            if (PickupRegistry.Instance == null || PickupRegistry.Instance.Registry == null) {
+                Debug.Log("PickupRegistry not in scene or no SO assigned.");
+                return;
+            }
+            var all = PickupRegistry.Instance.Registry.AllPickups;
+            if (all.Count == 0) {
+                Debug.Log("Registry is empty.");
+                return;
+            }
+            PickupSO pickup = all[UnityEngine.Random.Range(0, all.Count)];
+            TryAcquire(pickup);
+        }
+#endif
     }
 }
