@@ -40,3 +40,4 @@ MonoBehaviour:
   - roomPrefab: {fileID: 8940783283723358148, guid: f52e90a08e9e57f40887a14db5502607, type: 3}
     gridPosition: {x: 1, y: 3}
     contentsOverride: {fileID: 11400000, guid: fcb86dc891fa880449898573f0436ac1, type: 2}
+  allowedRarities: 000000000100000002000000

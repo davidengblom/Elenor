@@ -10,10 +10,6 @@ namespace Elenor {
         [SerializeField, Tooltip("Enemy prefabs to spawn, indexed against the room's enemy spawn points in hierarchy order.")]
         List<EnemySO> initialEnemies = new();
 
-        [SerializeField, Tooltip("Pool the cleared-room reward is drawn from at random.")]
-        List<PickupSO> possiblePickups = new();
-
         public IReadOnlyList<EnemySO> InitialEnemies => initialEnemies;
-        public IReadOnlyList<PickupSO> PossiblePickups => possiblePickups;
     }
 }

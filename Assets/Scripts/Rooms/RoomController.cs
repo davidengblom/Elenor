@@ -87,14 +87,28 @@ namespace Elenor {
         }
 
         void SpawnReward() {
-            if (contents == null || contents.PossiblePickups.Count == 0) {
-                Debug.LogWarning($"{name}: contents has no possible pickups. Skipping reward.", this);
+            if (PickupRegistry.Instance == null) {
+                Debug.Log($"{name}: no PickupRegistry in scene. Skipping reward", this);
+                return;
+            }
+            if (RunManager.Instance == null || RunManager.Instance.CurrentFloor == null) {
+                Debug.Log($"{name}: no current floor. Skipping reward.", this);
+            }
+
+            var allowed = RunManager.Instance.CurrentFloor.AllowedRarities;
+            var inventory = FindAnyObjectByType<PlayerPickupInventory>();
+
+            var candidates = PickupRegistry.Instance
+                .GetByRarities(allowed)
+                .Where(p => inventory == null || !inventory.IsMaxed(p))
+                .ToList();
+            
+            if (candidates.Count == 0) {
+                Debug.Log($"{name}: no eligible pickups for this floor. Skipping reward.", this);
                 return;
             }
 
-            var pool = contents.PossiblePickups;
-            PickupSO so = pool[UnityEngine.Random.Range(0, pool.Count)];
-            if (so == null) return;
+            PickupSO so = candidates[UnityEngine.Random.Range(0, candidates.Count)];
 
             if (RoomManager.Instance != null) {
                 RoomManager.Instance.RegisterPendingReward(so);
@@ -196,12 +210,8 @@ namespace Elenor {
                 sb.AppendLine("ERROR: No RoomContentsSO assigned.");
             } else {
                 sb.AppendLine($"Initial enemies in contents: {contents.InitialEnemies.Count}");
-                sb.AppendLine($"Possible pickups in contents: {contents.PossiblePickups.Count}");
                 if (contents.InitialEnemies.Count > enemyCount) {
                     sb.AppendLine($"WARNING: More initialEnemies ({contents.InitialEnemies.Count}) than enemy spawns ({enemyCount}). Extras will be ignored.");
-                }
-                if (contents.PossiblePickups.Count == 0) {
-                    sb.AppendLine("WARNING: contents has no possible pickups. No reward will spawn.");
                 }
             }
             sb.AppendLine();

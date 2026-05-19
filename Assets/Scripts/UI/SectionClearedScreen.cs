@@ -72,12 +72,9 @@ namespace Elenor {
             if (upgradesText != null) {
                 Transform player = PlayerLocator.Player;
                 if (player != null) {
-                    var stats = player.GetComponent<PlayerStats>();
                     var health = player.GetComponent<PlayerHealth>();
-                    float dmg = stats != null ? stats.DamageMultiplier : 1f;
-                    float spd = stats != null ? stats.MoveSpeed : 0f;
                     float maxHP = health != null ? health.MaxHealth : 0f;
-                    upgradesText.text = $"DMG: {dmg:0.0}x\nSPD: {spd:0.0}\nMax HP: {maxHP:0}";
+                    upgradesText.text = $"Max HP: {maxHP:0}";
                 } else {
                     upgradesText.text = "Upgrades: --";
                 }
