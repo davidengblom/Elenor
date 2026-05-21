@@ -9,23 +9,19 @@ namespace Elenor {
         public int Level { get; set; }
         public float FireRateMultiplier { get; private set; } = 1f;
         public float DamagePerShotMultiplier { get; private set; } = 1f;
-
         public float BulletScaleMultiplier { get; private set; } = 1f;
-        public Color BulletColor { get; private set; } = Color.white;
-        public Sprite BulletSprite { get; private set; }
+        public Projectile ProjectilePrefab { get; private set; }
 
         public void Configure(
             float fireRateMultiplier,
             float damagePerShotMultiplier,
             float bulletScaleMultiplier,
-            Color bulletColor,
-            Sprite bulletSprite
+            Projectile projectilePrefab
         ) {
             FireRateMultiplier = fireRateMultiplier;
             DamagePerShotMultiplier = damagePerShotMultiplier;
             BulletScaleMultiplier = bulletScaleMultiplier;
-            BulletColor = bulletColor;
-            BulletSprite = bulletSprite;
+            ProjectilePrefab = projectilePrefab;
         }
     }
 }

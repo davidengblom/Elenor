@@ -20,16 +20,13 @@ MonoBehaviour:
   levels:
   - fireRateMultiplier: 2
     damagePerShotMultiplier: 0.5
-    bulletScaleMultiplier: 5
-    bulletColor: {r: 0.3679244, g: 0.60431546, b: 1, a: 1}
-    bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    bulletScaleMultiplier: 1
+    projectilePrefab: {fileID: 3529108683424768763, guid: 4de96cf4fd973514185c309cc136f02a, type: 3}
   - fireRateMultiplier: 2.5
     damagePerShotMultiplier: 0.55
-    bulletScaleMultiplier: 4
-    bulletColor: {r: 0.36862746, g: 0.6039216, b: 1, a: 1}
-    bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    bulletScaleMultiplier: 0.9
+    projectilePrefab: {fileID: 3529108683424768763, guid: 4de96cf4fd973514185c309cc136f02a, type: 3}
   - fireRateMultiplier: 3
     damagePerShotMultiplier: 0.6
-    bulletScaleMultiplier: 3
-    bulletColor: {r: 0.36862746, g: 0.6039216, b: 1, a: 1}
-    bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    bulletScaleMultiplier: 0.8
+    projectilePrefab: {fileID: 3529108683424768763, guid: 4de96cf4fd973514185c309cc136f02a, type: 3}

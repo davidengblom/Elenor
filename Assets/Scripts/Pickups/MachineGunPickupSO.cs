@@ -11,10 +11,8 @@ namespace Elenor {
             public float damagePerShotMultiplier;
             [Tooltip("Multiplier applied to bullet scale.")]
             public float bulletScaleMultiplier;
-            [Tooltip("Color applied to bullet.")]
-            public Color bulletColor;
-            [Tooltip("Sprite applied to bullet.")]
-            public Sprite bulletSprite;
+            [Tooltip("Projectile prefab to use.")]
+            public Projectile projectilePrefab;
         }
 
         [SerializeField] LevelData[] levels = new LevelData[MaxLevel];
@@ -29,8 +27,7 @@ namespace Elenor {
                 data.fireRateMultiplier,
                 data.damagePerShotMultiplier,
                 data.bulletScaleMultiplier,
-                data.bulletColor,
-                data.bulletSprite
+                data.projectilePrefab
             );
         }
 

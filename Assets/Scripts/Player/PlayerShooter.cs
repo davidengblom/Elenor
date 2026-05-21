@@ -34,19 +34,17 @@ namespace Elenor {
             Vector3 spawnPos = transform.position + (Vector3)(dir * muzzleOffset);
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
+            var mg = GetComponent<MachineGunModifier>();
+            Projectile prefab = mg != null && mg.ProjectilePrefab != null ? mg.ProjectilePrefab : weapon.ProjectilePrefab;
+
             Projectile proj = Instantiate(
-                weapon.ProjectilePrefab,
+                prefab,
                 spawnPos,
                 Quaternion.Euler(0f, 0f, angle)
             );
 
             float dmg = weapon.Damage * (_stats != null ? _stats.DamageMultiplier : 1f) * GetDamageMultiplier();
             proj.Launch(dir * weapon.ProjectileSpeed, dmg, weapon.ProjectileLifetime, weapon.KnockbackForce);
-
-            var mg = GetComponent<MachineGunModifier>();
-            if (mg != null) {
-                proj.ApplyVisuals(mg.BulletScaleMultiplier, mg.BulletColor, mg.BulletSprite);
-            }
         }
 
         float GetFireRateMultiplier() {
