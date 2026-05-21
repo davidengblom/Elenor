@@ -9,9 +9,11 @@ namespace Elenor {
         float _knockback;
         Vector2 _direction;
         float _despawnAt;
+        SpriteRenderer _sprite;
 
         void Awake() {
             _rb = GetComponent<Rigidbody2D>();
+            _sprite = GetComponent<SpriteRenderer>();
         }
 
         public void Launch(Vector2 velocity, float damage, float lifetime, float knockback = 0f) {
@@ -33,6 +35,20 @@ namespace Elenor {
             }
 
             Destroy(gameObject);
+        }
+
+        /// <summary>
+        /// Overrides projectile appearence.
+        /// </summary>
+        public void ApplyVisuals(float scaleMultiplier, Color color, Sprite spriteOverride = null) {
+            transform.localScale *= scaleMultiplier;
+
+            if (_sprite != null) {
+                _sprite.color = color;
+                if (spriteOverride != null) {
+                    _sprite.sprite = spriteOverride;
+                }
+            }
         }
     }
 }

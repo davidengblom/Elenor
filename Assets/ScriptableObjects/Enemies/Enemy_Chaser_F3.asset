@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Elenor::Elenor.EnemySO
   displayName: Chaser
   sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
-  tint: {r: 1, g: 0.39, b: 0.1, a: 1}
+  tint: {r: 0, g: 0.59607846, b: 0.85882354, a: 1}
   scale: 1
   maxHealth: 7
   moveSpeed: 4

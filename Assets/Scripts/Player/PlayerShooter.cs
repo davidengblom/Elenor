@@ -25,7 +25,9 @@ namespace Elenor {
             if (dir.sqrMagnitude < 0.0001f) return;
 
             Spawn(dir);
-            _nextFireTime = Time.time + 1f / Mathf.Max(0.01f, weapon.FireRate);
+
+            float fireRate = weapon.FireRate * GetFireRateMultiplier();
+            _nextFireTime = Time.time + 1f / Mathf.Max(0.01f, fireRate);
         }
 
         void Spawn(Vector2 dir) {
@@ -38,8 +40,23 @@ namespace Elenor {
                 Quaternion.Euler(0f, 0f, angle)
             );
 
-            float dmg = weapon.Damage * (_stats != null ? _stats.DamageMultiplier : 1f);
+            float dmg = weapon.Damage * (_stats != null ? _stats.DamageMultiplier : 1f) * GetDamageMultiplier();
             proj.Launch(dir * weapon.ProjectileSpeed, dmg, weapon.ProjectileLifetime, weapon.KnockbackForce);
+
+            var mg = GetComponent<MachineGunModifier>();
+            if (mg != null) {
+                proj.ApplyVisuals(mg.BulletScaleMultiplier, mg.BulletColor, mg.BulletSprite);
+            }
+        }
+
+        float GetFireRateMultiplier() {
+            var mg = GetComponent<MachineGunModifier>();
+            return mg != null ? mg.FireRateMultiplier : 1f;
+        }
+
+        float GetDamageMultiplier() {
+            var mg = GetComponent<MachineGunModifier>();
+            return mg != null ? mg.DamagePerShotMultiplier : 1f;
         }
 
         [ContextMenu("Debug: Log Damage")]

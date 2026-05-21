@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74375b4974d86034b8b490eb78ec5557, type: 3}
   m_Name: PickupRegistry
   m_EditorClassIdentifier: Elenor::Elenor.PickupRegistrySO
-  allPickups: []
+  allPickups:
+  - {fileID: 11400000, guid: 0663cf08d10b57b4ab71df98a14becf9, type: 2}

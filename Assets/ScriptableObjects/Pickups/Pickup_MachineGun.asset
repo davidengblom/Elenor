@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73535f84b9ca86648a6229ac2d75fc8b, type: 3}
+  m_Name: Pickup_MachineGun
+  m_EditorClassIdentifier: Elenor::Elenor.MachineGunPickupSO
+  displayName: Stuck Pen
+  flavorText: It won't stop clicking. Click click click click.
+  sprite: {fileID: 0}
+  displayColor: {r: 0.047058824, g: 0.9019608, b: 0.9490196, a: 1}
+  rarity: 0
+  levels:
+  - fireRateMultiplier: 2
+    damagePerShotMultiplier: 0.5
+    bulletScaleMultiplier: 5
+    bulletColor: {r: 0.3679244, g: 0.60431546, b: 1, a: 1}
+    bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  - fireRateMultiplier: 2.5
+    damagePerShotMultiplier: 0.55
+    bulletScaleMultiplier: 4
+    bulletColor: {r: 0.36862746, g: 0.6039216, b: 1, a: 1}
+    bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  - fireRateMultiplier: 3
+    damagePerShotMultiplier: 0.6
+    bulletScaleMultiplier: 3
+    bulletColor: {r: 0.36862746, g: 0.6039216, b: 1, a: 1}
+    bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
