@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9725bb432223c0b4782499c4c48549fd, type: 3}
+  m_Name: Pickup_Poison
+  m_EditorClassIdentifier: Elenor::Elenor.PoisonPickupSO
+  displayName: Cafeteria Mystery
+  flavorText: Nobody asked what's in it.
+  sprite: {fileID: 0}
+  displayColor: {r: 0.4, g: 0.9, b: 0.3, a: 1}
+  rarity: 0
+  levels:
+  - dps: 1
+    duration: 2
+    spawnCloudOnDeath: 0
+    cloudRadius: 0
+    cloudDuration: 0
+    cloudPrefab: {fileID: 0}
+  - dps: 2
+    duration: 4
+    spawnCloudOnDeath: 0
+    cloudRadius: 0
+    cloudDuration: 0
+    cloudPrefab: {fileID: 0}
+  - dps: 3
+    duration: 5
+    spawnCloudOnDeath: 1
+    cloudRadius: 1.5
+    cloudDuration: 2
+    cloudPrefab: {fileID: 2845462827902927103, guid: 050fef4cf5ea6d148995ec020a81115e, type: 3}

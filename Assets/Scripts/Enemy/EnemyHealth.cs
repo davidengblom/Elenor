@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using System;
 
 namespace Elenor {
     public class EnemyHealth : MonoBehaviour, IDamageable {
@@ -23,6 +24,8 @@ namespace Elenor {
 
         public float Current => _current;
         public bool IsAlive => _current > 0f;
+
+        public event Action Died;
 
         void Awake() {
             Init(data);
@@ -69,6 +72,7 @@ namespace Elenor {
         }
 
         void Die() {
+            Died?.Invoke();
             if (Hitstop.Instance != null) Hitstop.Instance.Pulse();
             Destroy(gameObject);
         }

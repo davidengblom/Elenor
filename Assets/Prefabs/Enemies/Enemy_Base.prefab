@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 3950684634431400744}
   - component: {fileID: 1918378282470441166}
   - component: {fileID: 7738311985476124814}
+  - component: {fileID: 1856798677740882323}
   m_Layer: 7
   m_Name: Enemy_Base
   m_TagString: Untagged
@@ -175,6 +176,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Elenor::Elenor.EnemyHealth
   data: {fileID: 0}
   fallbackMaxHealth: 3
+  flashDuration: 0.08
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  knockbackStunDuration: 0.15
 --- !u!114 &1838286855063405137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,3 +233,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.EnemyBootstrapper
   data: {fileID: 0}
+--- !u!114 &1856798677740882323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8412602562813439139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39da5427816040e4794eae5b0278ccd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Elenor::Elenor.EnemyPoisonStatus

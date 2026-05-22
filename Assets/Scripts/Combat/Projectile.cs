@@ -11,6 +11,14 @@ namespace Elenor {
         float _despawnAt;
         SpriteRenderer _sprite;
 
+        float _poisonDps;
+        float _poisonDuration;
+        bool _poisonSpawnCloudOnDeath;
+        float _poisonCloudRadius;
+        float _poisonCloudDuration;
+        PoisonCloud _poisonCloudPrefab;
+        bool _hasPoison;
+
         void Awake() {
             _rb = GetComponent<Rigidbody2D>();
             _sprite = GetComponent<SpriteRenderer>();
@@ -32,6 +40,17 @@ namespace Elenor {
             if (collision.collider.TryGetComponent<IDamageable>(out var dmg)) {
                 Vector2 impulse = _direction * _knockback;
                 dmg.TakeDamage(_damage, impulse);
+
+                if (_hasPoison && collision.collider.TryGetComponent<EnemyPoisonStatus>(out var poison)) {
+                    poison.Apply(
+                        _poisonDps,
+                        _poisonDuration,
+                        _poisonSpawnCloudOnDeath,
+                        _poisonCloudRadius,
+                        _poisonCloudDuration,
+                        _poisonCloudPrefab
+                    );
+                }
             }
 
             Destroy(gameObject);
@@ -49,6 +68,23 @@ namespace Elenor {
                     _sprite.sprite = spriteOverride;
                 }
             }
+        }
+
+        public void ConfigurePoison(
+            float dps,
+            float duration,
+            bool spawnCloudOnDeath,
+            float cloudRadius,
+            float cloudDuration,
+            PoisonCloud cloudPrefab
+        ) {
+            _hasPoison = dps > 0f && duration > 0f;
+            _poisonDps = dps;
+            _poisonDuration = duration;
+            _poisonSpawnCloudOnDeath = spawnCloudOnDeath;
+            _poisonCloudRadius = cloudRadius;
+            _poisonCloudDuration = cloudDuration;
+            _poisonCloudPrefab = cloudPrefab;
         }
     }
 }

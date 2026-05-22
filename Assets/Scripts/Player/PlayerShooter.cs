@@ -43,8 +43,25 @@ namespace Elenor {
                 Quaternion.Euler(0f, 0f, angle)
             );
 
+            if (mg != null && mg.BulletScaleMultiplier != 1f) {
+                proj.transform.localScale *= mg.BulletScaleMultiplier;
+            }
+
+            float knockback = mg != null ? 0f : weapon.KnockbackForce;
             float dmg = weapon.Damage * (_stats != null ? _stats.DamageMultiplier : 1f) * GetDamageMultiplier();
-            proj.Launch(dir * weapon.ProjectileSpeed, dmg, weapon.ProjectileLifetime, weapon.KnockbackForce);
+            proj.Launch(dir * weapon.ProjectileSpeed, dmg, weapon.ProjectileLifetime, knockback);
+
+            var poison = GetComponent<PoisonModifier>();
+            if (poison != null && poison.Dps > 0f && poison.Duration > 0f) {
+                proj.ConfigurePoison(
+                    poison.Dps,
+                    poison.Duration,
+                    poison.SpawnCloudOnDeath,
+                    poison.CloudRadius,
+                    poison.CloudDuration,
+                    poison.CloudPrefab
+                );
+            }
         }
 
         float GetFireRateMultiplier() {
