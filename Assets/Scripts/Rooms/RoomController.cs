@@ -12,6 +12,7 @@ namespace Elenor {
         [SerializeField] RoomContentsSO contents;
         [SerializeField] GameObject enemyBasePrefab;
         [SerializeField] GameObject pickupPrefab;
+        [SerializeField] WeaponPickup weaponPickupPrefab;
         [SerializeField] GameObject doorPrefab;
         [SerializeField] GameObject exitDoorPrefab;
 
@@ -75,12 +76,35 @@ namespace Elenor {
         }
 
         void SpawnPickupForSO(PickupSO so) {
-            if (pickupPrefab == null) {
-                Debug.LogWarning($"{name}: no pickupPrefab assigned. Skipping reward.", this);
+            if (so == null) return;
+
+            if (so.Category == PickupCategory.Weapon) {
+                if (weaponPickupPrefab == null) {
+                    Debug.LogWarning($"{name}: no weaponPickupPrefab assigned.", this);
+                    return;
+                }
+
+                WeaponPickup weaponPickup = Instantiate(
+                    weaponPickupPrefab,
+                    transform.position,
+                    Quaternion.identity,
+                    transform
+                );
+                weaponPickup.Configure((WeaponSO)so);
                 return;
             }
 
-            GameObject go = Instantiate(pickupPrefab, transform.position, Quaternion.identity, transform);
+            if (pickupPrefab == null) {
+                Debug.LogWarning($"{name}: no pickupPrefab assigned.", this);
+                return;
+            }
+
+            GameObject go = Instantiate(
+                pickupPrefab,
+                transform.position,
+                Quaternion.identity,
+                transform
+            );
             if (go.TryGetComponent<Pickup>(out var pickup)) {
                 pickup.Configure(so);
             }

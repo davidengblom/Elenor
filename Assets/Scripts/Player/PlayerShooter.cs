@@ -1,24 +1,43 @@
 using UnityEngine;
+using System;
 
 namespace Elenor {
     [RequireComponent(typeof(PlayerInputReader))]
     [RequireComponent(typeof(PlayerStats))]
     public class PlayerShooter : MonoBehaviour {
         [SerializeField] WeaponSO weapon;
+        [SerializeField] Projectile projectileShellPrefab;
+        [SerializeField] WeaponPickup weaponPickupPrefab;
         [SerializeField, Tooltip("How far in front of the player the bullet spawns.")]
         float muzzleOffset = 0.45f;
 
         PlayerInputReader _input;
         PlayerStats _stats;
         float _nextFireTime;
+        WeaponSO _equippedWeapon;
+
+        public WeaponSO EquippedWeapon => _equippedWeapon;
+        public event Action<WeaponSO> WeaponEquipped;
 
         void Awake() {
             _input = GetComponent<PlayerInputReader>();
             _stats = GetComponent<PlayerStats>();
+
+            if (projectileShellPrefab == null) {
+                Debug.LogError("PlayerShooter: no projectileShellPrefab assigned.", this);
+            }
+            if (weaponPickupPrefab == null) {
+                Debug.LogError("PlayerShooter: no weaponPickupPrefab assigned.", this);
+            }
+            if (weapon == null) {
+                Debug.LogError("PlayerShooter: no weapon assigned.", this);
+                return;
+            }
+            EquipWeapon(weapon);
         }
 
         void Update() {
-            if (weapon == null || !_input.ShootHeld) return;
+            if (_equippedWeapon == null || !_input.ShootHeld) return;
             if (Time.time < _nextFireTime) return;
 
             Vector2 dir = _input.ShootInput.normalized;
@@ -26,59 +45,67 @@ namespace Elenor {
 
             Spawn(dir);
 
-            float fireRate = weapon.FireRate * GetFireRateMultiplier();
-            _nextFireTime = Time.time + 1f / Mathf.Max(0.01f, fireRate);
+            _nextFireTime = Time.time + 1f / Mathf.Max(0.01f, _equippedWeapon.FireRate);
         }
 
         void Spawn(Vector2 dir) {
             Vector3 spawnPos = transform.position + (Vector3)(dir * muzzleOffset);
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-            var mg = GetComponent<MachineGunModifier>();
-            Projectile prefab = mg != null && mg.ProjectilePrefab != null ? mg.ProjectilePrefab : weapon.ProjectilePrefab;
-
             Projectile proj = Instantiate(
-                prefab,
+                projectileShellPrefab,
                 spawnPos,
                 Quaternion.Euler(0f, 0f, angle)
             );
 
-            if (mg != null && mg.BulletScaleMultiplier != 1f) {
-                proj.transform.localScale *= mg.BulletScaleMultiplier;
+            ProjectileConfigSnapshot snapshot = _equippedWeapon.ProjectileConfig.ToSnapshot();
+
+            // Apply all modifiers to snapshot
+            foreach (var mod in GetComponents<IProjectileModifier>()) {
+                mod.Modify(ref snapshot);
             }
 
-            float knockback = mg != null ? 0f : weapon.KnockbackForce;
-            float dmg = weapon.Damage * (_stats != null ? _stats.DamageMultiplier : 1f) * GetDamageMultiplier();
-            proj.Launch(dir * weapon.ProjectileSpeed, dmg, weapon.ProjectileLifetime, knockback);
+            proj.Configure(snapshot);
 
-            var poison = GetComponent<PoisonModifier>();
-            if (poison != null && poison.Dps > 0f && poison.Duration > 0f) {
-                proj.ConfigurePoison(
-                    poison.Dps,
-                    poison.Duration,
-                    poison.SpawnCloudOnDeath,
-                    poison.CloudRadius,
-                    poison.CloudDuration,
-                    poison.CloudPrefab
-                );
+            float statMult = _stats != null ? _stats.DamageMultiplier : 1f;
+            float dmg = snapshot.Damage * _equippedWeapon.DamageMultiplier * statMult;
+            proj.Launch(
+                dir * snapshot.Speed,
+                dmg,
+                snapshot.Lifetime,
+                snapshot.KnockbackForce
+            );
+        }
+
+        public void EquipWeapon(WeaponSO newWeapon) {
+            if (newWeapon == null) {
+                Debug.LogError("PlayerShooter: EquipWeapon called with null.", this);
+                return;
             }
+            if (newWeapon.ProjectileConfig == null) {
+                Debug.LogError($"PlayerShooter: weapon {newWeapon.DisplayName} has no projectileConfig", this);
+                return;
+            }
+
+            _equippedWeapon = newWeapon;
+            WeaponEquipped?.Invoke(_equippedWeapon);
         }
 
-        float GetFireRateMultiplier() {
-            var mg = GetComponent<MachineGunModifier>();
-            return mg != null ? mg.FireRateMultiplier : 1f;
-        }
+        /// <summary>
+        /// Equips a new weapon and drops the current one on the floor.
+        public bool SwapWeapon(WeaponSO newWeapon, Vector3 dropPosition) {
+            if (newWeapon == null) return false;
+            if (newWeapon == _equippedWeapon) return false;
 
-        float GetDamageMultiplier() {
-            var mg = GetComponent<MachineGunModifier>();
-            return mg != null ? mg.DamagePerShotMultiplier : 1f;
-        }
+            WeaponSO previous = _equippedWeapon;
+            EquipWeapon(newWeapon);
 
-        [ContextMenu("Debug: Log Damage")]
-        void DebugLogDamage() {
-            float baseDmg = weapon != null ? weapon.Damage : 0f;
-            float mult = _stats != null ? _stats.DamageMultiplier : 1f;
-            Debug.Log($"PlayerShooter: base={baseDmg} × mult={mult} = {baseDmg * mult}", this);
+            if (previous != null && weaponPickupPrefab != null) {
+                WeaponPickup drop = Instantiate(weaponPickupPrefab, dropPosition, Quaternion.identity);
+                drop.Configure(previous);
+            }
+
+            return true;
         }
     }
 }

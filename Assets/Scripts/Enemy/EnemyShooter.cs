@@ -3,6 +3,7 @@ using UnityEngine;
 namespace Elenor {
     public class EnemyShooter : MonoBehaviour {
         [SerializeField] EnemySO data;
+        [SerializeField] Projectile projectileShellPrefab;
         [SerializeField] float muzzleOffset = 0.45f;
         [SerializeField, Tooltip("Random seconds added to the first shot, so enemies spawned at the same time don't fire together.")]
         float startupJitter = 0.5f;
@@ -10,12 +11,20 @@ namespace Elenor {
         float _nextFireTime;
 
         void Awake() {
+            if (projectileShellPrefab == null) {
+                Debug.LogError("EnemyShooter: no projectileShellPrefab assigned.", this);
+            }
             Init(data);
         }
 
         public void Init(EnemySO so) {
             data = so;
             if (so == null || !so.IsRanged) {
+                enabled = false;
+                return;
+            }
+            if (so.Weapon == null || so.Weapon.ProjectileConfig == null) {
+                Debug.LogError($"EnemyShooter: {so.DisplayName} has no weapon or projectileConfig", this);
                 enabled = false;
                 return;
             }
@@ -39,16 +48,25 @@ namespace Elenor {
 
         void Spawn(Vector2 dir) {
             var weapon = data.Weapon;
+            ProjectileConfigSO config = weapon.ProjectileConfig;
+
             Vector3 spawnPos = transform.position + (Vector3)(dir * muzzleOffset);
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
             Projectile proj = Instantiate(
-                weapon.ProjectilePrefab,
+                projectileShellPrefab,
                 spawnPos,
                 Quaternion.Euler(0f, 0f, angle)
             );
 
-            proj.Launch(dir * weapon.ProjectileSpeed, weapon.Damage, weapon.ProjectileLifetime, weapon.KnockbackForce);
+            proj.Configure(config);
+            float dmg = config.Damage * weapon.DamageMultiplier;
+            proj.Launch(
+                dir * config.Speed,
+                dmg,
+                config.Lifetime,
+                config.KnockbackForce
+            );
         }
     }
 }

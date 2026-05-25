@@ -19,6 +19,9 @@ namespace Elenor {
         SpriteRenderer _sprite;
         Color _baseColor;
         Coroutine _flashRoutine;
+        float _poisonDps;
+        float _poisonExpiresAt;
+        Coroutine _poisonRoutine;
         EnemyMover _mover;
         Rigidbody2D _rb;
 
@@ -69,6 +72,33 @@ namespace Elenor {
             }
 
             if (_current <= 0f) Die();
+        }
+
+        public void ApplyPoison(float dps, float duration) {
+            if (dps <= 0f || duration <= 0f || !IsAlive) return;
+            _poisonDps = dps;
+            _poisonExpiresAt = Time.time + duration;
+
+            if (_poisonRoutine == null) {
+                _poisonRoutine = StartCoroutine(PoisonTickRoutine());
+            }
+
+            if (_sprite != null) _sprite.color = new Color(0.6f, 1f, 0.5f, _baseColor.a);
+        }
+
+        IEnumerator PoisonTickRoutine() {
+            float nextTick = Time.time + 1f;
+
+            while (IsAlive && Time.time < _poisonExpiresAt) {
+                if (Time.time >= nextTick) {
+                    TakeDamage(_poisonDps);
+                    nextTick = Time.time + 1f;
+                }
+                yield return null;
+            }
+
+            if (_sprite != null && IsAlive) _sprite.color = _baseColor;
+            _poisonRoutine = null;
         }
 
         void Die() {

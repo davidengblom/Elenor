@@ -24,6 +24,10 @@ namespace Elenor {
 
         void OnTriggerEnter2D(Collider2D other) {
             if (_data == null) return;
+            if (_data.Category == PickupCategory.Weapon) {
+                Debug.LogWarning($"Pickup: {_data.DisplayName} is a weapon. Use WeaponPickup.", this);
+                return;
+            }
             if (!other.CompareTag("Player")) return;
 
             if (other.TryGetComponent<PlayerPickupInventory>(out var inventory)) {

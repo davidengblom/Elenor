@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d81f317173a0734c8a3294ef30470c6, type: 3}
-  m_Name: Weapon_PlayerStarter
+  m_Name: Weapon_Starter
   m_EditorClassIdentifier: Elenor::Elenor.WeaponSO
-  projectilePrefab: {fileID: 3529108683424768763, guid: b8c4a21de53abeb4a8d662503d66fdda, type: 3}
-  damage: 1
-  knockbackForce: 0.1
+  displayName: Starter
+  flavorText: 
+  icon: {fileID: 0}
+  projectileConfig: {fileID: 11400000, guid: fa476a3c47799ad4198ddb4231e52e3d, type: 2}
   fireRate: 4
-  projectileSpeed: 12
-  projectileLifetime: 1.5
+  damageMultiplier: 1

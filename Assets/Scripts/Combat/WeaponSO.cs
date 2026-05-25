@@ -1,21 +1,23 @@
 using UnityEngine;
 
 namespace Elenor {
-    [CreateAssetMenu(menuName = "Elenor/Weapon", fileName = "Weapon_New")]
-    public class WeaponSO : ScriptableObject {
-        [SerializeField] Projectile projectilePrefab;
-        [SerializeField] float damage = 1f;
-        [SerializeField, Min(0f), Tooltip("Force applied to moveable enemies on hit. 0 = no knockback.")]
-        float knockbackForce = 1.5f;
-        [SerializeField, Tooltip("Shots per second")] float fireRate = 3f;
-        [SerializeField] float projectileSpeed = 12f;
-        [SerializeField] float projectileLifetime = 1.5f;
+    [CreateAssetMenu(menuName = "Elenor/Weapons/Weapon", fileName = "Weapon_")]
+    public class WeaponSO : PickupSO {
+        [Header("Identity")]
+        [SerializeField] Sprite icon;
 
-        public Projectile ProjectilePrefab => projectilePrefab;
-        public float Damage => damage;
-        public float KnockbackForce => knockbackForce;
+        [Header("Firing")]
+        [SerializeField] ProjectileConfigSO projectileConfig;
+        [SerializeField, Tooltip("Shots per second")]
+        float fireRate = 4f;
+        [SerializeField, Tooltip("Multiplier applied to projectile damage.")]
+        float damageMultiplier = 1f;
+
+        public override PickupCategory Category => PickupCategory.Weapon;
+
+        public Sprite Icon => icon;
+        public ProjectileConfigSO ProjectileConfig => projectileConfig;
         public float FireRate => fireRate;
-        public float ProjectileSpeed => projectileSpeed;
-        public float ProjectileLifetime => projectileLifetime;
+        public float DamageMultiplier => damageMultiplier;
     }
 }

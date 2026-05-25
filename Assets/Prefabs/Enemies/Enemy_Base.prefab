@@ -17,7 +17,6 @@ GameObject:
   - component: {fileID: 3950684634431400744}
   - component: {fileID: 1918378282470441166}
   - component: {fileID: 7738311985476124814}
-  - component: {fileID: 1856798677740882323}
   m_Layer: 7
   m_Name: Enemy_Base
   m_TagString: Untagged
@@ -205,6 +204,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.EnemyShooter
   data: {fileID: 0}
+  projectileShellPrefab: {fileID: 2225553143598922506, guid: a4ff6faace632954c8141acea9b711a1, type: 3}
   muzzleOffset: 0.45
   startupJitter: 0.5
 --- !u!114 &1918378282470441166
@@ -233,15 +233,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.EnemyBootstrapper
   data: {fileID: 0}
---- !u!114 &1856798677740882323
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8412602562813439139}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39da5427816040e4794eae5b0278ccd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Elenor::Elenor.EnemyPoisonStatus

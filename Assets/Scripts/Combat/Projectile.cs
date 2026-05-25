@@ -10,18 +10,22 @@ namespace Elenor {
         Vector2 _direction;
         float _despawnAt;
         SpriteRenderer _sprite;
-
-        float _poisonDps;
-        float _poisonDuration;
-        bool _poisonSpawnCloudOnDeath;
-        float _poisonCloudRadius;
-        float _poisonCloudDuration;
-        PoisonCloud _poisonCloudPrefab;
-        bool _hasPoison;
+        ProjectileConfigSnapshot _snapshot;
 
         void Awake() {
             _rb = GetComponent<Rigidbody2D>();
             _sprite = GetComponent<SpriteRenderer>();
+        }
+
+        public void Configure(ProjectileConfigSnapshot snapshot) {
+            _snapshot = snapshot;
+
+            if (_sprite != null && snapshot.Sprite != null) {
+                _sprite.sprite = snapshot.Sprite;
+                _sprite.color = snapshot.Color;
+            }
+
+            transform.localScale = new Vector3(snapshot.Scale, snapshot.Scale, 1f);
         }
 
         public void Launch(Vector2 velocity, float damage, float lifetime, float knockback = 0f) {
@@ -30,6 +34,11 @@ namespace Elenor {
             _rb.linearVelocity = velocity;
             _direction = velocity.sqrMagnitude > 0f ? velocity.normalized : Vector2.zero;
             _despawnAt = Time.time + lifetime;
+        }
+
+        public void Configure(ProjectileConfigSO config) {
+            if (config == null) return;
+            Configure(config.ToSnapshot());
         }
 
         void Update() {
@@ -41,15 +50,8 @@ namespace Elenor {
                 Vector2 impulse = _direction * _knockback;
                 dmg.TakeDamage(_damage, impulse);
 
-                if (_hasPoison && collision.collider.TryGetComponent<EnemyPoisonStatus>(out var poison)) {
-                    poison.Apply(
-                        _poisonDps,
-                        _poisonDuration,
-                        _poisonSpawnCloudOnDeath,
-                        _poisonCloudRadius,
-                        _poisonCloudDuration,
-                        _poisonCloudPrefab
-                    );
+                if (_snapshot.ApplyPoison && collision.collider.TryGetComponent<EnemyHealth>(out var health)) {
+                    health.ApplyPoison(_snapshot.PoisonDps, _snapshot.PoisonDuration);
                 }
             }
 
@@ -68,23 +70,6 @@ namespace Elenor {
                     _sprite.sprite = spriteOverride;
                 }
             }
-        }
-
-        public void ConfigurePoison(
-            float dps,
-            float duration,
-            bool spawnCloudOnDeath,
-            float cloudRadius,
-            float cloudDuration,
-            PoisonCloud cloudPrefab
-        ) {
-            _hasPoison = dps > 0f && duration > 0f;
-            _poisonDps = dps;
-            _poisonDuration = duration;
-            _poisonSpawnCloudOnDeath = spawnCloudOnDeath;
-            _poisonCloudRadius = cloudRadius;
-            _poisonCloudDuration = cloudDuration;
-            _poisonCloudPrefab = cloudPrefab;
         }
     }
 }

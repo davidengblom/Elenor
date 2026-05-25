@@ -24,6 +24,9 @@ namespace Elenor {
         /// </summary>
         public bool TryAcquire(PickupSO pickup) {
             if (pickup == null) return false;
+            if (pickup.Category != PickupCategory.Modifier) return false;
+            if (pickup is not ModifierSO modifierPickup) return false;
+
             int currentLevel = GetLevel(pickup);
             if (currentLevel >= PickupSO.MaxLevel) return false;
 
@@ -31,15 +34,15 @@ namespace Elenor {
             _levels[pickup] = newLevel;
 
             if (currentLevel == 0) {
-                IBehaviorModifier modifier = (IBehaviorModifier)gameObject.AddComponent(pickup.ModifierType);
+                IBehaviorModifier modifier = (IBehaviorModifier)gameObject.AddComponent(modifierPickup.ModifierComponentType);
                 modifier.Level = newLevel;
-                pickup.ConfigureModifier(modifier, newLevel);
+                modifierPickup.ConfigureModifier(modifier, newLevel);
                 _modifiers[pickup] = modifier;
                 PickupAcquired?.Invoke(pickup, newLevel);
             } else {
                 if (_modifiers.TryGetValue(pickup, out var existing)) {
                     existing.Level = newLevel;
-                    pickup.ConfigureModifier(existing, newLevel);
+                    modifierPickup.ConfigureModifier(existing, newLevel);
                 }
                 PickupLeveledUp?.Invoke(pickup, newLevel);
             }
