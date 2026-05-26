@@ -9,6 +9,8 @@ namespace Elenor {
         public Vector2Int gridPosition;
         [Tooltip("Optional. Overrides the prefab's default RoomContentsSO.")]
         public RoomContentsSO contentsOverride;
+        [Tooltip("Normal rooms drop nothing. Weapon and Modifier rooms use the item room pipeline.")]
+        public RoomType roomType = RoomType.Normal;
     }
 
     [CreateAssetMenu(menuName = "Elenor/Floors/Floor", fileName = "Floor_")]

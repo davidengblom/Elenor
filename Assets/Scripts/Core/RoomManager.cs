@@ -8,6 +8,8 @@ namespace Elenor {
 
         [SerializeField, Tooltip("Distance the player is pushed inward when spawning at a door anchor.")]
         float doorEntryPushIn = 2.5f;
+        [SerializeField, Tooltip("Prefab used to re-spawn player-dropped weapons on room re-entry.")]
+        WeaponPickup weaponPickupPrefab;
 
         FloorSO _floor;
         Vector2Int _currentGridPos;
@@ -28,6 +30,12 @@ namespace Elenor {
 
         readonly Dictionary<Vector2Int, PickupSO> _pendingRewards = new();
 
+        struct DroppedWeaponEntry {
+            public WeaponSO Weapon;
+            public Vector3 Position;
+        }
+        readonly Dictionary<Vector2Int, List<DroppedWeaponEntry>> _droppedWeapons = new();
+
         void Awake() {
             if (Instance != null && Instance != this) {
                 Destroy(gameObject);
@@ -37,9 +45,8 @@ namespace Elenor {
         }
 
         void OnDestroy() {
-            if (_currentRoom != null) {
+            if (_currentRoom != null)
                 _currentRoom.RoomCleared -= OnCurrentRoomCleared;
-            }
             if (Instance == this) Instance = null;
         }
 
@@ -54,6 +61,7 @@ namespace Elenor {
             _enteredFrom = null;
             _clearedRooms.Clear();
             _pendingRewards.Clear();
+            _droppedWeapons.Clear();
 
             FloorChanged?.Invoke(_floor);
             SpawnRoom();
@@ -101,10 +109,12 @@ namespace Elenor {
             _currentRoom.Initialize(new RoomController.RoomState {
                 IsCleared = alreadyCleared,
                 PendingReward = pendingReward,
+                RoomType = entry.roomType,
             }, entry.contentsOverride);
 
-            RoomChanged?.Invoke(_currentGridPos);
+            SpawnTrackedDroppedWeapons();
 
+            RoomChanged?.Invoke(_currentGridPos);
             PlacePlayerAtSpawn();
         }
 
@@ -143,6 +153,20 @@ namespace Elenor {
             }
         }
 
+        void SpawnTrackedDroppedWeapons() {
+            if (_currentRoom == null) return;
+            if (!_droppedWeapons.TryGetValue(_currentGridPos, out var list) || list.Count == 0) return;
+            if (weaponPickupPrefab == null) {
+                Debug.LogWarning("RoomManager: weaponPickupPrefab not assigned. Cannot re-spawn dropped weapons.", this);
+                return;
+            }
+            for (int i = 0; i < list.Count; i++) {
+                if (list[i].Weapon == null) continue;
+                WeaponPickup wp = Instantiate(weaponPickupPrefab, list[i].Position, Quaternion.identity, _currentRoom.transform);
+                wp.Configure(list[i].Weapon, instant: true, pedestal: false);
+            }
+        }
+
         void OnCurrentRoomCleared() {
             _clearedRooms.Add(_currentGridPos);
             RoomsCleared++;
@@ -161,6 +185,26 @@ namespace Elenor {
 
         public void NotifyPickupCollected() {
             _pendingRewards.Remove(_currentGridPos);
+        }
+
+        public void RegisterDroppedWeapon(WeaponSO weapon, Vector3 worldPosition) {
+            if (weapon == null) return;
+            if (!_droppedWeapons.TryGetValue(_currentGridPos, out var list)) {
+                list = new List<DroppedWeaponEntry>();
+                _droppedWeapons[_currentGridPos] = list;
+            }
+            list.Add(new DroppedWeaponEntry { Weapon = weapon, Position = worldPosition });
+        }
+
+        public void NotifyDroppedWeaponCollected(WeaponSO weapon, Vector3 position) {
+            if (!_droppedWeapons.TryGetValue(_currentGridPos, out var list)) return;
+            for (int i = list.Count - 1; i >= 0; i--) {
+                if (list[i].Weapon == weapon &&
+                    (list[i].Position - position).sqrMagnitude < 0.01f) {
+                    list.RemoveAt(i);
+                    return;
+                }
+            }
         }
     }
 }

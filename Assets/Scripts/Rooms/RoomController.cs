@@ -18,6 +18,7 @@ namespace Elenor {
 
         public bool IsCleared { get; private set; }
 
+        RoomType _roomType;
         readonly HashSet<GameObject> _activeEnemies = new();
 
         public IReadOnlyCollection<GameObject> ActiveEnemies => _activeEnemies;
@@ -26,9 +27,11 @@ namespace Elenor {
         public class RoomState {
             public bool IsCleared;
             public PickupSO PendingReward;
+            public RoomType RoomType;
         }
 
         public void Initialize(RoomState state, RoomContentsSO contentsOverride = null) {
+            _roomType = state.RoomType;
             if (contentsOverride != null) contents = contentsOverride;
             
             if (state.IsCleared) {
@@ -78,6 +81,10 @@ namespace Elenor {
         void SpawnPickupForSO(PickupSO so) {
             if (so == null) return;
 
+            Vector3 spawnPos = transform.position;
+            var pedestal = GetComponentInChildren<Pedestal>();
+            if (pedestal != null) spawnPos = pedestal.transform.position;
+
             if (so.Category == PickupCategory.Weapon) {
                 if (weaponPickupPrefab == null) {
                     Debug.LogWarning($"{name}: no weaponPickupPrefab assigned.", this);
@@ -86,11 +93,11 @@ namespace Elenor {
 
                 WeaponPickup weaponPickup = Instantiate(
                     weaponPickupPrefab,
-                    transform.position,
+                    spawnPos,
                     Quaternion.identity,
                     transform
                 );
-                weaponPickup.Configure((WeaponSO)so);
+                weaponPickup.Configure((WeaponSO)so, instant: true, pedestal: true);
                 return;
             }
 
@@ -101,7 +108,7 @@ namespace Elenor {
 
             GameObject go = Instantiate(
                 pickupPrefab,
-                transform.position,
+                spawnPos,
                 Quaternion.identity,
                 transform
             );
@@ -111,34 +118,64 @@ namespace Elenor {
         }
 
         void SpawnReward() {
+            if (_roomType == RoomType.WeaponRoom) {
+                SpawnWeaponRoomReward();
+            } else if (_roomType == RoomType.ModifierRoom) {
+                SpawnModifierRoomReward();
+            }
+            // Normal rooms spawn no reward.
+        }
+
+        void SpawnWeaponRoomReward() {
             if (PickupRegistry.Instance == null) {
-                Debug.Log($"{name}: no PickupRegistry in scene. Skipping reward", this);
-                return;
-            }
-            if (RunManager.Instance == null || RunManager.Instance.CurrentFloor == null) {
-                Debug.Log($"{name}: no current floor. Skipping reward.", this);
+                Debug.Log($"{name}: no PickupRegistry in scene.", this);
                 return;
             }
 
-            var allowed = RunManager.Instance.CurrentFloor.AllowedRarities;
-            var inventory = FindAnyObjectByType<PlayerPickupInventory>();
+            var shooter = PlayerLocator.Player.GetComponent<PlayerShooter>();
+            WeaponSO equipped = shooter != null ? shooter.EquippedWeapon : null;
 
-            var candidates = PickupRegistry.Instance
-                .GetByRarities(allowed)
-                .Where(p => inventory == null || !inventory.IsMaxed(p))
-                .ToList();
-            
-            if (candidates.Count == 0) {
-                Debug.Log($"{name}: no eligible pickups for this floor. Skipping reward.", this);
+            WeaponSO selected = ItemRoomDropPipeline.SelectWeapon(
+                // TODO: Wouldnt it be more efficient to have it only look at a list of weapons and not all pickups?
+                PickupRegistry.Instance.Registry.AllPickups,
+                equipped
+            );
+
+            if (selected == null) {
+                Debug.Log($"{name}: weapon room pool is empty.", this);
                 return;
             }
 
-            PickupSO so = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+            RegisterAndSpawn(selected);
+        }
 
+        // TODO: This method and the one above are essentially identical. Can we combine them somehow?
+        void SpawnModifierRoomReward() {
+            if (PickupRegistry.Instance == null) {
+                Debug.Log($"{name}: no PickupRegistry in scene.", this);
+                return;
+            }
+
+            var inventory = PlayerLocator.Player.GetComponent<PlayerPickupInventory>();
+
+            ModifierSO selected = ItemRoomDropPipeline.SelectModifier(
+                // TODO: Wouldnt it be more efficient to have it only look at a list of modifiers and not all pickups?
+                PickupRegistry.Instance.Registry.AllPickups,
+                inventory
+            );
+
+            if (selected == null) {
+                Debug.Log($"{name}: modifier room pool is empty.", this);
+                return;
+            }
+
+            RegisterAndSpawn(selected);
+        }
+
+        void RegisterAndSpawn(PickupSO so) {
             if (RoomManager.Instance != null) {
                 RoomManager.Instance.RegisterPendingReward(so);
             }
-
             SpawnPickupForSO(so);
         }
 
@@ -156,10 +193,23 @@ namespace Elenor {
                     continue;
                 }
 
+                RoomType neighborType = RoomType.Normal;
+                if (RoomManager.Instance.Floor != null) {
+                    Vector2Int neighborPos = RoomManager.Instance.CurrentGridPos + dir.Offset();
+                    FloorRoomEntry neighborEntry = RoomManager.Instance.Floor.FindRoomAt(neighborPos);
+                    if (neighborEntry != null) neighborType = neighborEntry.roomType;
+                }
+
                 Quaternion rot = Quaternion.Euler(0f, 0f, dir.ToZRotation());
-                GameObject doorGO = Instantiate(doorPrefab, anchor.transform.position, rot, transform);
+                GameObject doorGO = Instantiate(
+                    doorPrefab,
+                    anchor.transform.position,
+                    rot,
+                    transform
+                );
                 if (doorGO.TryGetComponent<Door>(out var door)) {
                     door.Configure(dir);
+                    door.SetNeighborRoomType(neighborType);
                 }
             }
 

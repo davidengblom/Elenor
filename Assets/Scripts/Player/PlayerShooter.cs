@@ -93,7 +93,7 @@ namespace Elenor {
 
         /// <summary>
         /// Equips a new weapon and drops the current one on the floor.
-        public bool SwapWeapon(WeaponSO newWeapon, Vector3 dropPosition) {
+        public bool SwapWeapon(WeaponSO newWeapon, Vector3 dropPosition, Transform dropParent = null) {
             if (newWeapon == null) return false;
             if (newWeapon == _equippedWeapon) return false;
 
@@ -101,8 +101,11 @@ namespace Elenor {
             EquipWeapon(newWeapon);
 
             if (previous != null && weaponPickupPrefab != null) {
-                WeaponPickup drop = Instantiate(weaponPickupPrefab, dropPosition, Quaternion.identity);
+                WeaponPickup drop = Instantiate(weaponPickupPrefab, dropPosition, Quaternion.identity, dropParent);
                 drop.Configure(previous);
+                if (RoomManager.Instance != null) {
+                    RoomManager.Instance.RegisterDroppedWeapon(previous, dropPosition);
+                }
             }
 
             return true;

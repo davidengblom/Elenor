@@ -2903,6 +2903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.RoomManager
   doorEntryPushIn: 2.5
+  weaponPickupPrefab: {fileID: 1325579130373927437, guid: f31aba0200a55644193b87abcda39790, type: 3}
 --- !u!4 &1227628813
 Transform:
   m_ObjectHideFlags: 0

@@ -10,16 +10,23 @@ namespace Elenor {
 
         SpriteRenderer _sprite;
         float _armedAtTime;
+        bool _isPedestal;
 
         void Awake() {
             _sprite = GetComponent<SpriteRenderer>();
             Rearm();
             ApplyVisuals();
         }
-
-        public void Configure(WeaponSO newWeapon) {
+        
+        /// <param name="instant">Pass true for pedestal spawns. Skips arm delay.</param>
+        public void Configure(WeaponSO newWeapon, bool instant = false, bool pedestal = false) {
             weapon = newWeapon;
-            Rearm();
+            _isPedestal = pedestal;
+            if (instant || pedestal) {
+                _armedAtTime = 0f;
+            } else {
+                Rearm();
+            }
             ApplyVisuals();
         }
 
@@ -39,7 +46,16 @@ namespace Elenor {
             if (!other.CompareTag("Player")) return;
             if (!other.TryGetComponent<PlayerShooter>(out var shooter)) return;
 
-            if (shooter.SwapWeapon(weapon, other.transform.position)) {
+            Vector3 pos = transform.position;
+            WeaponSO wep = weapon;
+            bool wasPedestal = _isPedestal;
+
+            bool swapped = shooter.SwapWeapon(wep, pos, transform.parent);
+            if (swapped) {
+                if (RoomManager.Instance != null) {
+                    if (wasPedestal) RoomManager.Instance.NotifyPickupCollected();
+                    else RoomManager.Instance.NotifyDroppedWeaponCollected(wep, pos);
+                }
                 Destroy(gameObject);
             }
         }
