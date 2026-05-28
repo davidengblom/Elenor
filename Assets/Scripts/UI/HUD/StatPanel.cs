@@ -1,8 +1,10 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using Elenor;
 
-namespace Elenor {
-    public class HUD : MonoBehaviour {
+namespace Elenor.UI.HUD {
+    public class StatPanel : MonoBehaviour {
         [SerializeField] TMP_Text healthText;
         [SerializeField] TMP_Text damageText;
         [SerializeField] TMP_Text speedText;

@@ -2,46 +2,29 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using Elenor;
 
-namespace Elenor {
-    public class PickupNotification : MonoBehaviour {
+namespace Elenor.UI.HUD {
+    public class PickupNotification : PickupInventoryListener {
         [SerializeField] CanvasGroup group;
         [SerializeField] Image icon;
         [SerializeField] TMP_Text titleText;
         [SerializeField] TMP_Text flavorText;
         [SerializeField] float fadeIn = 0.2f;
-        [SerializeField] float hold = 2.5f;
+        [SerializeField] float hold = 4.5f;
         [SerializeField] float fadeOut = 0.5f;
 
-        PlayerPickupInventory _inventory;
         Coroutine _routine;
 
         void Awake() {
             if (group != null) group.alpha = 0f;
         }
 
-        // TODO: Isn't this literally the same code as the Start function in PickupIconRow?
-        void Start() {
-            Transform player = PlayerLocator.Player;
-            if (player == null) return;
-            _inventory = player.GetComponent<PlayerPickupInventory>();
-            if (_inventory == null) return;
-
-            _inventory.PickupAcquired += OnAcquired;
-            _inventory.PickupLeveledUp += OnLeveledUp;
+        protected override void OnPickupAcquired(PickupSO pickup, int level) {
+            Show(pickup, $"{pickup.DisplayName} - Lv {level}", pickup.FlavorText);
         }
 
-        void OnDestroy() {
-            if (_inventory == null) return;
-            _inventory.PickupAcquired -= OnAcquired;
-            _inventory.PickupLeveledUp -= OnLeveledUp;
-        }
-
-        void OnAcquired(PickupSO pickup, int level) {
-            Show(pickup, $"{pickup.DisplayName}", pickup.FlavorText);
-        }
-
-        void OnLeveledUp(PickupSO pickup, int level) {
+        protected override void OnPickupLeveledUp(PickupSO pickup, int level) {
             Show(pickup, $"{pickup.DisplayName} - Lv {level}", pickup.FlavorText);
         }
 
@@ -57,7 +40,7 @@ namespace Elenor {
             _routine = StartCoroutine(Run());
         }
 
-        // TODO: Temp solution. Use something in engine instead probablyy
+        // TODO: This module should not be responsible for fading etc.
         IEnumerator Run() {
             yield return Fade(0f, 1f, fadeIn);
             yield return new WaitForSeconds(hold);

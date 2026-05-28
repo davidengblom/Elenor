@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Elenor;
 
-namespace Elenor {
+namespace Elenor.UI.MainMenu {
     public class MainMenuController : MonoBehaviour {
         [SerializeField] Button startRunButton;
         [SerializeField] Button quitButton;

@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Elenor;
 
-namespace Elenor {
+namespace Elenor.UI.HUD {
     public class PickupIcon : MonoBehaviour {
         [SerializeField] Image icon;
         [SerializeField] TMP_Text levelText;

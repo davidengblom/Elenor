@@ -1306,11 +1306,11 @@ MonoBehaviour:
   panel: {fileID: 1214934219}
   restartRunButton: {fileID: 1087687625}
   quitToMenuButton: {fileID: 660050767}
+  gameSceneName: Game
+  mainMenuSceneName: MainMenu
   timeText: {fileID: 1386477680}
   damageText: {fileID: 2042064334}
   upgradesText: {fileID: 286410553}
-  gameSceneName: Game
-  mainMenuSceneName: MainMenu
 --- !u!114 &519294098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1324,11 +1324,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.PauseMenuController
   panel: {fileID: 51861443}
-  resumeButton: {fileID: 511485924}
-  restartButton: {fileID: 34124467}
+  restartRunButton: {fileID: 34124467}
   quitToMenuButton: {fileID: 1560066505}
   gameSceneName: Game
   mainMenuSceneName: MainMenu
+  resumeButton: {fileID: 511485924}
 --- !u!1 &524153371
 GameObject:
   m_ObjectHideFlags: 0

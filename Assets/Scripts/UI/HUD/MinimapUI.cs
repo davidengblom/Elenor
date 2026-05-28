@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Elenor;
 
-namespace Elenor {
+namespace Elenor.UI.HUD {
     public class MinimapUI : MonoBehaviour {
         [Header("Layout")]
         [SerializeField] RectTransform container;

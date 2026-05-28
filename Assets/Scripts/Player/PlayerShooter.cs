@@ -18,6 +18,7 @@ namespace Elenor {
 
         public WeaponSO EquippedWeapon => _equippedWeapon;
         public event Action<WeaponSO> WeaponEquipped;
+        public event Action<WeaponSO> WeaponSwapped;
 
         void Awake() {
             _input = GetComponent<PlayerInputReader>();
@@ -99,6 +100,7 @@ namespace Elenor {
 
             WeaponSO previous = _equippedWeapon;
             EquipWeapon(newWeapon);
+            WeaponSwapped?.Invoke(newWeapon);
 
             if (previous != null && weaponPickupPrefab != null) {
                 WeaponPickup drop = Instantiate(weaponPickupPrefab, dropPosition, Quaternion.identity, dropParent);
