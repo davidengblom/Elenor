@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f047f4e2c870ddd4fab91958b92fcdad, type: 3}
+  m_Name: Pickup_PowerSize
+  m_EditorClassIdentifier: Elenor::Elenor.PowerSizePickupSO
+  displayName: Energy Drink
+  flavorText: She'd never finished one before. Felt different.
+  sprite: {fileID: 0}
+  displayColor: {r: 0, g: 0.59607846, b: 0.85882354, a: 1}
+  rarity: 1
+  levels:
+  - damageBonus: 0.25
+    speedBonus: 0.15
+    scaleBonus: 0.2
+  - damageBonus: 0.5
+    speedBonus: 0.25
+    scaleBonus: 0.35
+  - damageBonus: 0.85
+    speedBonus: 0.4
+    scaleBonus: 0.55

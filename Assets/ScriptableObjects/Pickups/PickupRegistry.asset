@@ -15,3 +15,4 @@ MonoBehaviour:
   allPickups:
   - {fileID: 11400000, guid: e84673b9edc194f42bca3c2fa86fa93c, type: 2}
   - {fileID: 11400000, guid: 7caf78eece130cd48abb23410c349685, type: 2}
+  - {fileID: 11400000, guid: 29cd2f8e03a677e42a9c287e4354e38a, type: 2}
