@@ -11,14 +11,19 @@ namespace Elenor.UI.HUD {
         [SerializeField] TMP_Text roomsText;
         [SerializeField] TMP_Text roomIndexText;
 
+        [SerializeField] Image weaponIcon;
+        [SerializeField] TMP_Text weaponNameText;
+
         PlayerHealth _health;
         PlayerStats _stats;
+        PlayerShooter _shooter;
 
         void Start() {
             Transform player = PlayerLocator.Player;
             if (player != null) {
                 _health = player.GetComponent<PlayerHealth>();
                 _stats = player.GetComponent<PlayerStats>();
+                _shooter = player.GetComponent<PlayerShooter>();
             }
 
             if (_health != null) {
@@ -29,6 +34,14 @@ namespace Elenor.UI.HUD {
                 _stats.StatsChanged += OnStatsChanged;
                 OnStatsChanged();
             }
+
+            if (_shooter != null) {
+                _shooter.WeaponEquipped += OnWeaponEquipped;
+                if (_shooter.EquippedWeapon != null) {
+                    OnWeaponEquipped(_shooter.EquippedWeapon);
+                }
+            }
+
             if (RoomManager.Instance != null) {
                 RoomManager.Instance.RoomsClearedChanged += OnRoomsClearedChanged;
                 RoomManager.Instance.RoomChanged += OnRoomChanged;
@@ -40,6 +53,7 @@ namespace Elenor.UI.HUD {
         void OnDestroy() {
             if (_health != null) _health.HealthChanged -= OnHealthChanged;
             if (_stats != null) _stats.StatsChanged -= OnStatsChanged;
+            if (_shooter != null) _shooter.WeaponEquipped -= OnWeaponEquipped;
             if (RoomManager.Instance != null) {
                 RoomManager.Instance.RoomsClearedChanged -= OnRoomsClearedChanged;
                 RoomManager.Instance.RoomChanged -= OnRoomChanged;
@@ -71,6 +85,20 @@ namespace Elenor.UI.HUD {
         void OnRoomChanged(Vector2Int gridPos) {
             if (roomIndexText != null) {
                 roomIndexText.text = $"Pos {gridPos.x},{gridPos.y}";
+            }
+        }
+
+        void OnWeaponEquipped(WeaponSO weapon) {
+            if (weapon == null) return;
+            if (weaponIcon != null) {
+                Sprite sprite = weapon.Icon != null ? weapon.Icon : weapon.Sprite;
+                weaponIcon.sprite = sprite;
+                weaponIcon.color = weapon.DisplayColor;
+                weaponIcon.enabled = sprite != null;
+            }
+
+            if (weaponNameText != null) {
+                weaponNameText.text = weapon.DisplayName;
             }
         }
     }
