@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 namespace Elenor {
     [RequireComponent(typeof(PlayerInputReader))]
@@ -15,6 +16,7 @@ namespace Elenor {
         PlayerStats _stats;
         float _nextFireTime;
         WeaponSO _equippedWeapon;
+        readonly List<Vector2> _spawnDirections = new();
 
         public WeaponSO EquippedWeapon => _equippedWeapon;
         public event Action<WeaponSO> WeaponEquipped;
@@ -49,7 +51,26 @@ namespace Elenor {
             _nextFireTime = Time.time + 1f / Mathf.Max(0.01f, _equippedWeapon.FireRate);
         }
 
-        void Spawn(Vector2 dir) {
+        void Spawn(Vector2 aimDir) {
+            _spawnDirections.Clear();
+
+            foreach (var spawnMod in GetComponents<IProjectileSpawnModifier>()) {
+                spawnMod.ContributeDirections(aimDir, _spawnDirections);
+            }
+
+            if (_spawnDirections.Count == 0) {
+                _spawnDirections.Add(aimDir);
+            }
+
+            for (int i = 0; i < _spawnDirections.Count; i++) {
+                SpawnProjectile(_spawnDirections[i]);
+            }
+        }
+
+        void SpawnProjectile(Vector2 dir) {
+            if (dir.sqrMagnitude < 0.0001f) return;
+            dir = dir.normalized;
+
             Vector3 spawnPos = transform.position + (Vector3)(dir * muzzleOffset);
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 

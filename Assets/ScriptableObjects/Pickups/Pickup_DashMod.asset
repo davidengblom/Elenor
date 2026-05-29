@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9331204ffda87b4ea6369652ff14182, type: 3}
   m_Name: Pickup_DashMod
   m_EditorClassIdentifier: Elenor::Elenor.DashModPickupSO
-  displayName: Pickup
-  flavorText: 
+  displayName: Track Shoes
+  flavorText: From the lost and found. Someone fast.
   sprite: {fileID: 0}
-  displayColor: {r: 1, g: 1, b: 1, a: 1}
-  rarity: 0
+  displayColor: {r: 0.9490196, g: 0.9066055, b: 0.04705882, a: 1}
+  rarity: 1
   levels:
-  - dashDamageMultiplier: 0
-    durationMultiplier: 0
+  - dashDamageMultiplier: 4
+    durationMultiplier: 1
     refundOnKill: 0
-  - dashDamageMultiplier: 0
-    durationMultiplier: 0
+  - dashDamageMultiplier: 4
+    durationMultiplier: 1.4
     refundOnKill: 0
-  - dashDamageMultiplier: 0
-    durationMultiplier: 0
-    refundOnKill: 0
+  - dashDamageMultiplier: 4
+    durationMultiplier: 1.4
+    refundOnKill: 1

@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d29ee7e369b3344aaa0887a4ab38fd7, type: 3}
   m_Name: Pickup_Shield
   m_EditorClassIdentifier: Elenor::Elenor.ShieldPickupSO
-  displayName: Pickup
-  flavorText: 
+  displayName: Lucky Charm
+  flavorText: She kept it in her pocket. Always.
   sprite: {fileID: 0}
-  displayColor: {r: 1, g: 1, b: 1, a: 1}
-  rarity: 0
+  displayColor: {r: 1, g: 0.3830188, b: 0.91846603, a: 1}
+  rarity: 2
   levels:
-  - maxHits: 0
-    regenSeconds: 0
-  - maxHits: 0
-    regenSeconds: 0
-  - maxHits: 0
-    regenSeconds: 0
+  - maxHits: 1
+    regenSeconds: 12
+  - maxHits: 1
+    regenSeconds: 8
+  - maxHits: 2
+    regenSeconds: 8
