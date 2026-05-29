@@ -22,7 +22,7 @@ namespace Elenor {
             if (!collision.collider.CompareTag("Player")) return;
 
             if (collision.collider.TryGetComponent<IDamageable>(out var dmg)) {
-                dmg.TakeDamage(data.ContactDamage);
+                dmg.TakeDamage(data.ContactDamage, default, DamageSource.Enemy);
             }
         }
     }

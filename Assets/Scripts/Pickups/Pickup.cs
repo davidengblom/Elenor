@@ -4,42 +4,41 @@ namespace Elenor {
     [RequireComponent(typeof(SpriteRenderer))]
     [RequireComponent(typeof(Collider2D))]
     public class Pickup : MonoBehaviour {
-        [SerializeField] PickupSO data;
-
-        SpriteRenderer _renderer;
-
-        public PickupSO Data => data;
-
-        public void Configure(PickupSO so) {
-            data = so;
-            ApplyVisuals();
-        }
+        PickupSO _data;
+        SpriteRenderer _sprite;
 
         void Awake() {
-            _renderer = GetComponent<SpriteRenderer>();
+            _sprite = GetComponent<SpriteRenderer>();
         }
 
-        void Start() {
+        public void Configure(PickupSO data) {
+            _data = data;
             ApplyVisuals();
         }
 
         void ApplyVisuals() {
-            if (data == null) return;
-            _renderer.color = data.DisplayColor;
+            if (_data == null || _sprite == null) return;
+            if (_data.Sprite != null) _sprite.sprite = _data.Sprite;
+            _sprite.color = _data.DisplayColor;
         }
 
         void OnTriggerEnter2D(Collider2D other) {
-            if (data == null) return;
-            if (!other.CompareTag("Player")) return;
-            if (!data.CanApplyTo(other.gameObject)) return;
-
-            data.ApplyTo(other.gameObject);
-
-            if (RoomManager.Instance != null) {
-                RoomManager.Instance.NotifyPickupCollected();
+            if (_data == null) return;
+            if (_data.Category == PickupCategory.Weapon) {
+                Debug.LogWarning($"Pickup: {_data.DisplayName} is a weapon. Use WeaponPickup.", this);
+                return;
             }
+            if (!other.CompareTag("Player")) return;
 
-            Destroy(gameObject);
+            if (other.TryGetComponent<PlayerPickupInventory>(out var inventory)) {
+                if (inventory.TryAcquire(_data)) {
+                    if (RoomManager.Instance != null) {
+                        RoomManager.Instance.NotifyPickupCollected();
+                    }
+                    Destroy(gameObject);
+                }
+            }
+            // If TryAcquire returns false, the pickup is maxed
         }
     }
 }

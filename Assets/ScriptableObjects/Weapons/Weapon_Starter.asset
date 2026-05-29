@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d81f317173a0734c8a3294ef30470c6, type: 3}
+  m_Name: Weapon_Starter
+  m_EditorClassIdentifier: Elenor::Elenor.WeaponSO
+  displayName: Starter
+  flavorText: 
+  sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
+  displayColor: {r: 1, g: 1, b: 1, a: 1}
+  rarity: 0
+  icon: {fileID: 0}
+  projectileConfig: {fileID: 11400000, guid: fa476a3c47799ad4198ddb4231e52e3d, type: 2}
+  fireRate: 4
+  damageMultiplier: 1

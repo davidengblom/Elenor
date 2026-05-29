@@ -12,6 +12,6 @@ namespace Elenor {
         /// </summary>
         /// <param name="amount">Damage points to apply.</param>
         /// <param name="hitImpulse">
-        void TakeDamage(float amount, Vector2 hitImpulse = default);
+        void TakeDamage(float amount, Vector2 hitImpulse = default, DamageSource source = DamageSource.Unspecified);
     }
 }

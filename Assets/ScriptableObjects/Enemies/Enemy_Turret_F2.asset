@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Elenor::Elenor.EnemySO
   displayName: Turret
   sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
-  tint: {r: 1, g: 0.19, b: 0.19, a: 1}
+  tint: {r: 0.047058824, g: 0.9019608, b: 0.9490196, a: 1}
   scale: 1
   maxHealth: 4
   moveSpeed: 0

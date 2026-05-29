@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0089757b99e93034fa6112da4ec79c94, type: 3}
+  m_Name: Floor_F1
+  m_EditorClassIdentifier: Elenor::Elenor.FloorSO
+  displayName: Floor 1
+  startPosition: {x: 1, y: 0}
+  exitPosition: {x: 2, y: 1}
+  rooms:
+  - roomPrefab: {fileID: 3827708581576041634, guid: 795fb88e69524094581dcd6dadd50895, type: 3}
+    gridPosition: {x: 1, y: 0}
+    contentsOverride: {fileID: 0}
+    roomType: 0
+  - roomPrefab: {fileID: 8940783283723358148, guid: f52e90a08e9e57f40887a14db5502607, type: 3}
+    gridPosition: {x: 1, y: 1}
+    contentsOverride: {fileID: 0}
+    roomType: 0
+  - roomPrefab: {fileID: 7327923253585575795, guid: fa14ae9d8b98a6d4486b684457ad578a, type: 3}
+    gridPosition: {x: 0, y: 1}
+    contentsOverride: {fileID: 0}
+    roomType: 1
+  - roomPrefab: {fileID: 8940783283723358148, guid: f52e90a08e9e57f40887a14db5502607, type: 3}
+    gridPosition: {x: 2, y: 1}
+    contentsOverride: {fileID: 0}
+    roomType: 0
+  allowedRarities: 00000000

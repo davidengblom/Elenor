@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d81f317173a0734c8a3294ef30470c6, type: 3}
   m_Name: Weapon_Enemy
   m_EditorClassIdentifier: Elenor::Elenor.WeaponSO
-  projectilePrefab: {fileID: 2225553143598922506, guid: a4ff6faace632954c8141acea9b711a1, type: 3}
-  damage: 1
-  knockbackForce: 0
+  displayName: Weapon
+  flavorText: 
+  icon: {fileID: 0}
+  projectileConfig: {fileID: 11400000, guid: a838eca2883146e44bfe5d682c3fe8ee, type: 2}
   fireRate: 1
-  projectileSpeed: 6
-  projectileLifetime: 3
+  damageMultiplier: 1

@@ -8,9 +8,11 @@ namespace Elenor {
         Rigidbody2D _rb;
         PlayerInputReader _input;
         PlayerStats _stats;
+        Vector2 _lastNonZeroMoveInput = Vector2.up;
 
         public Rigidbody2D Body => _rb;
         public bool MovementLocked { get; set; }
+        public Vector2 LastNonZeroMoveInput => _lastNonZeroMoveInput;
 
         void Awake() {
             _rb = GetComponent<Rigidbody2D>();
@@ -20,6 +22,11 @@ namespace Elenor {
 
         void FixedUpdate() {
             if (MovementLocked) return;
+
+            if (_input.MoveInput.sqrMagnitude > 0.0001f) {
+                _lastNonZeroMoveInput = _input.MoveInput.normalized;
+            }
+            
             float speed = _stats != null ? _stats.MoveSpeed : 0f;
             _rb.linearVelocity = _input.MoveInput * speed;
         }

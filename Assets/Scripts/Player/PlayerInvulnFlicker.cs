@@ -9,6 +9,8 @@ namespace Elenor {
         float minAlpha = 0.3f;
         [SerializeField, Min(1f), Tooltip("Pulses per second.")]
         float pulseHz = 8f;
+        [SerializeField] Color blockedFlashColor = Color.azure;
+        [SerializeField, Min(0.01f)] float blockedFlashDuration = 0.08f;
 
         SpriteRenderer _sprite;
         PlayerHealth _health;
@@ -23,10 +25,12 @@ namespace Elenor {
 
         void OnEnable() {
             _health.Damaged += OnDamaged;
+            _health.HitBlocked += OnHitBlocked;
         }
 
         void OnDisable() {
             _health.Damaged -= OnDamaged;
+            _health.HitBlocked -= OnHitBlocked;
             if (_routine != null) {
                 StopCoroutine(_routine);
                 _routine = null;
@@ -37,6 +41,25 @@ namespace Elenor {
         void OnDamaged(float _) {
             if (_routine != null) StopCoroutine(_routine);
             _routine = StartCoroutine(FlickerRoutine());
+        }
+
+        void OnHitBlocked() {
+            if (_routine != null) StopCoroutine(_routine);
+            _routine = StartCoroutine(BlockedFlashRoutine());
+        }
+
+        IEnumerator BlockedFlashRoutine() {
+            Color flash = blockedFlashColor;
+            flash.a = _baseColor.a;
+            _sprite.color = flash;
+            yield return new WaitForSeconds(blockedFlashDuration);
+
+            if (_health.IsInvulnerable && _health.IsAlive) {
+                _routine = StartCoroutine(FlickerRoutine());
+            } else {
+                _sprite.color = _baseColor;
+                _routine = null;
+            }
         }
 
         IEnumerator FlickerRoutine() {
