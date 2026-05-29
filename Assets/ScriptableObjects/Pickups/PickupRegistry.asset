@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: PickupRegistry
   m_EditorClassIdentifier: Elenor::Elenor.PickupRegistrySO
   allPickups:
-  - {fileID: 11400000, guid: 7caf78eece130cd48abb23410c349685, type: 2}
+  - {fileID: 11400000, guid: 87940720d8458174fa2ea9c8cf3631d6, type: 2}
   - {fileID: 11400000, guid: 8f990d6b0ed707f4e84e6fd31262e531, type: 2}

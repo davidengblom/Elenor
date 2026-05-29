@@ -17,6 +17,10 @@ namespace Elenor {
         float _nextFireTime;
         WeaponSO _equippedWeapon;
         readonly List<Vector2> _spawnDirections = new();
+        bool _isCharging;
+        float _chargeStartTime;
+        Vector2 _chargeAimDir;
+        bool _wasShootHeld;
 
         public WeaponSO EquippedWeapon => _equippedWeapon;
         public event Action<WeaponSO> WeaponEquipped;
@@ -40,7 +44,18 @@ namespace Elenor {
         }
 
         void Update() {
-            if (_equippedWeapon == null || !_input.ShootHeld) return;
+            if (_equippedWeapon == null) return;
+
+            if (_equippedWeapon.Behavior is ChargeShotBehaviorSO chargeBehavior) {
+                UpdateChargeFire(chargeBehavior);
+                return;
+            }
+
+            UpdateStandardFire();
+        }
+
+        void UpdateStandardFire() {
+            if (!_input.ShootHeld) return;
             if (Time.time < _nextFireTime) return;
 
             Vector2 dir = _input.ShootInput.normalized;
@@ -51,7 +66,45 @@ namespace Elenor {
             _nextFireTime = Time.time + 1f / Mathf.Max(0.01f, _equippedWeapon.FireRate);
         }
 
-        void Spawn(Vector2 aimDir) {
+        void UpdateChargeFire(ChargeShotBehaviorSO behavior) {
+            bool shootHeld = _input.ShootHeld;
+            Vector2 aimDir = _input.ShootInput;
+
+            if (shootHeld) {
+                if (aimDir.sqrMagnitude > 0.0001f) {
+                    if (!_isCharging) {
+                        _chargeStartTime = Time.time;
+                        _isCharging = true;
+                    }
+                    _chargeAimDir = aimDir.normalized;
+                }
+            } else if (_wasShootHeld && _isCharging) {
+                ReleaseChargeShot(behavior);
+                _isCharging = false;
+            }
+
+            _wasShootHeld = shootHeld;
+        }
+
+        void ReleaseChargeShot(ChargeShotBehaviorSO behavior) {
+            if (_chargeAimDir.sqrMagnitude < 0.0001f) return;
+
+            float chargeTime = Mathf.Min(Time.time - _chargeStartTime, behavior.MaxChargeTime);
+            bool isTap = chargeTime < behavior.MinChargedHoldSeconds;
+
+            if (isTap) {
+                if (Time.time < _nextFireTime) return;
+                Spawn(_chargeAimDir);
+                _nextFireTime = Time.time + 1f / Mathf.Max(0.01f, _equippedWeapon.FireRate);
+            } else {
+                float charge01 = chargeTime / behavior.MaxChargeTime;
+                float chargeMult = Mathf.Lerp(1f, behavior.FullChargeDamageMultiplier, charge01);
+                Spawn(_chargeAimDir, behavior.ChargedProjectileConfig, chargeMult);
+                // Charged releases bypass _nextFireTime check.
+            }
+        }
+
+        void Spawn(Vector2 aimDir, ProjectileConfigSO configOverride = null, float chargeDamageMult = 1f) {
             _spawnDirections.Clear();
 
             foreach (var spawnMod in GetComponents<IProjectileSpawnModifier>()) {
@@ -63,11 +116,11 @@ namespace Elenor {
             }
 
             for (int i = 0; i < _spawnDirections.Count; i++) {
-                SpawnProjectile(_spawnDirections[i]);
+                SpawnProjectile(_spawnDirections[i], configOverride, chargeDamageMult);
             }
         }
 
-        void SpawnProjectile(Vector2 dir) {
+        void SpawnProjectile(Vector2 dir, ProjectileConfigSO configOverride = null, float chargeDamageMult = 1f) {
             if (dir.sqrMagnitude < 0.0001f) return;
             dir = dir.normalized;
 
@@ -80,7 +133,8 @@ namespace Elenor {
                 Quaternion.Euler(0f, 0f, angle)
             );
 
-            ProjectileConfigSnapshot snapshot = _equippedWeapon.ProjectileConfig.ToSnapshot();
+            ProjectileConfigSO config = configOverride ?? _equippedWeapon.ProjectileConfig;
+            ProjectileConfigSnapshot snapshot = config.ToSnapshot();
 
             // Apply all modifiers to snapshot
             foreach (var mod in GetComponents<IProjectileModifier>()) {
@@ -90,7 +144,7 @@ namespace Elenor {
             proj.Configure(snapshot);
 
             float statMult = _stats != null ? _stats.DamageMultiplier : 1f;
-            float dmg = snapshot.Damage * _equippedWeapon.DamageMultiplier * statMult;
+            float dmg = snapshot.Damage * _equippedWeapon.DamageMultiplier * statMult * chargeDamageMult;
             proj.Launch(
                 dir * snapshot.Speed,
                 dmg,
@@ -100,6 +154,9 @@ namespace Elenor {
         }
 
         public void EquipWeapon(WeaponSO newWeapon) {
+            _isCharging = false;
+            _wasShootHeld = false;
+            _nextFireTime = 0f;
             if (newWeapon == null) {
                 Debug.LogError("PlayerShooter: EquipWeapon called with null.", this);
                 return;
@@ -107,6 +164,9 @@ namespace Elenor {
             if (newWeapon.ProjectileConfig == null) {
                 Debug.LogError($"PlayerShooter: weapon {newWeapon.DisplayName} has no projectileConfig", this);
                 return;
+            }
+            if (newWeapon.Behavior is ChargeShotBehaviorSO charge && charge.ChargedProjectileConfig == null) {
+                Debug.LogError($"PlayerShooter: ChargeShot weapon {newWeapon.DisplayName} missing chargedProjectileConfig.", this);
             }
 
             _equippedWeapon = newWeapon;

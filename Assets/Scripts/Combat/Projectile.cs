@@ -11,10 +11,14 @@ namespace Elenor {
         float _despawnAt;
         SpriteRenderer _sprite;
         ProjectileConfigSnapshot _snapshot;
+        int _enemiesPierced;
+        Collider2D _collider;
+        float _speed;
 
         void Awake() {
             _rb = GetComponent<Rigidbody2D>();
             _sprite = GetComponent<SpriteRenderer>();
+            _collider = GetComponent<Collider2D>();
         }
 
         public void Configure(ProjectileConfigSnapshot snapshot) {
@@ -31,6 +35,7 @@ namespace Elenor {
         public void Launch(Vector2 velocity, float damage, float lifetime, float knockback = 0f) {
             _damage = damage;
             _knockback = knockback;
+            _speed = velocity.magnitude;
             _rb.linearVelocity = velocity;
             _direction = velocity.sqrMagnitude > 0f ? velocity.normalized : Vector2.zero;
             _despawnAt = Time.time + lifetime;
@@ -39,6 +44,7 @@ namespace Elenor {
         public void Configure(ProjectileConfigSO config) {
             if (config == null) return;
             Configure(config.ToSnapshot());
+            _enemiesPierced = 0;
         }
 
         void Update() {
@@ -52,6 +58,13 @@ namespace Elenor {
 
                 if (_snapshot.ApplyPoison && collision.collider.TryGetComponent<EnemyHealth>(out var health)) {
                     health.ApplyPoison(_snapshot.PoisonDps, _snapshot.PoisonDuration);
+                }
+
+                if (_snapshot.Pierce && _enemiesPierced < _snapshot.MaxPierceCount) {
+                    _enemiesPierced++;
+                    Physics2D.IgnoreCollision(_collider, collision.collider);
+                    _rb.linearVelocity = _direction * _speed;
+                    return;
                 }
             }
 

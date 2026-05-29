@@ -13,11 +13,15 @@ namespace Elenor {
         [SerializeField, Tooltip("Multiplier applied to projectile damage.")]
         float damageMultiplier = 1f;
 
+        [Header("Behavior (Optional)")]
+        [SerializeField] WeaponBehaviorSO behavior;
+
         public override PickupCategory Category => PickupCategory.Weapon;
 
         public Sprite Icon => icon;
         public ProjectileConfigSO ProjectileConfig => projectileConfig;
         public float FireRate => fireRate;
         public float DamageMultiplier => damageMultiplier;
+        public WeaponBehaviorSO Behavior => behavior;
     }
 }
