@@ -112,5 +112,11 @@ namespace Elenor {
 
             return true;
         }
+
+        public float GetEffectiveShotDamage() {
+            if (_equippedWeapon == null || _equippedWeapon.ProjectileConfig == null) return 1f;
+            float statMult = _stats != null ? _stats.DamageMultiplier : 1f;
+            return _equippedWeapon.ProjectileConfig.Damage * _equippedWeapon.DamageMultiplier * statMult;
+        }
     }
 }

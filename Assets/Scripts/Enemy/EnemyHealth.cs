@@ -24,6 +24,7 @@ namespace Elenor {
         Coroutine _poisonRoutine;
         EnemyMover _mover;
         Rigidbody2D _rb;
+        DamageSource _lastDamageSource;
 
         public float Current => _current;
         public bool IsAlive => _current > 0f;
@@ -55,8 +56,9 @@ namespace Elenor {
             if (_room != null) _room.UnregisterEnemy(gameObject);
         }
 
-        public void TakeDamage(float amount, Vector2 hitImpulse = default) {
+        public void TakeDamage(float amount, Vector2 hitImpulse = default, DamageSource source = DamageSource.Unspecified) {
             if (!IsAlive || amount <= 0f) return;
+            _lastDamageSource = source;
             _current = Mathf.Max(0f, _current - amount);
 
             if (_sprite != null) {
@@ -91,7 +93,7 @@ namespace Elenor {
 
             while (IsAlive && Time.time < _poisonExpiresAt) {
                 if (Time.time >= nextTick) {
-                    TakeDamage(_poisonDps);
+                    TakeDamage(_poisonDps, default, DamageSource.Poison);
                     nextTick = Time.time + 1f;
                 }
                 yield return null;
@@ -102,9 +104,20 @@ namespace Elenor {
         }
 
         void Die() {
+            ReportDirectKillIfApplicable();
             Died?.Invoke();
             if (Hitstop.Instance != null) Hitstop.Instance.Pulse();
             Destroy(gameObject);
+        }
+
+        void ReportDirectKillIfApplicable() {
+            if (_lastDamageSource != DamageSource.PlayerProjectile && _lastDamageSource != DamageSource.PlayerDash) return;
+
+            Transform player = PlayerLocator.Player;
+            if (player == null) return;
+            if (player.TryGetComponent<PlayerKillTracker>(out var tracker)) {
+                tracker.ReportDirectKill(_lastDamageSource);
+            }
         }
 
         IEnumerator FlashRoutine() {

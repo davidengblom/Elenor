@@ -36,7 +36,7 @@ namespace Elenor {
             HealthChanged?.Invoke(_current, maxHealth);
         }
 
-        public void TakeDamage(float amount, Vector2 hitImpulse = default) {
+        public void TakeDamage(float amount, Vector2 hitImpulse = default, DamageSource source = DamageSource.Unspecified) {
             if (!IsAlive || IsInvulnerable || amount <= 0f) return;
 
             _current = Mathf.Max(0f, _current - amount);

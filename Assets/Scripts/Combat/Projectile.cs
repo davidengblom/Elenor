@@ -48,7 +48,7 @@ namespace Elenor {
         void OnCollisionEnter2D(Collision2D collision) {
             if (collision.collider.TryGetComponent<IDamageable>(out var dmg)) {
                 Vector2 impulse = _direction * _knockback;
-                dmg.TakeDamage(_damage, impulse);
+                dmg.TakeDamage(_damage, impulse, DamageSource.PlayerProjectile);
 
                 if (_snapshot.ApplyPoison && collision.collider.TryGetComponent<EnemyHealth>(out var health)) {
                     health.ApplyPoison(_snapshot.PoisonDps, _snapshot.PoisonDuration);

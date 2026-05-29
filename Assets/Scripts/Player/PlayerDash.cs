@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 namespace Elenor {
     [RequireComponent(typeof(PlayerInputReader))]
@@ -16,6 +17,21 @@ namespace Elenor {
         float _nextDashTime;
         float _dashEndsAt;
         bool _isDashing;
+
+        public event Action DashStarted;
+        public event Action DashEnded;
+
+        public Rigidbody2D Body => _movement.Body;
+
+        float _durationMultiplier = 1f;
+
+        public void SetDurationMultiplier(float multiplier) {
+            _durationMultiplier = Mathf.Max(0.01f, multiplier);
+        }
+
+        public void RefundCooldown() {
+            _nextDashTime = Time.time;
+        }
 
         public bool IsDashing => _isDashing;
         public bool IsReady => !_isDashing && Time.time >= _nextDashTime;
@@ -58,18 +74,22 @@ namespace Elenor {
 
         void BeginDash(Vector2 dir) {
             _isDashing = true;
-            _dashEndsAt = Time.time + dashDuration;
+            float duration = dashDuration * _durationMultiplier;
+            _dashEndsAt = Time.time + duration;
             _nextDashTime = Time.time + dashCooldown;
 
             _movement.MovementLocked = true;
             _movement.Body.linearVelocity = dir * dashSpeed;
 
-            _health.GrantInvulnerability(dashDuration);
+            _health.GrantInvulnerability(duration);
+            DashStarted?.Invoke();
         }
 
         void EndDash() {
+            if (!_isDashing) return;
             _isDashing = false;
             if (_movement != null) _movement.MovementLocked = false;
+            DashEnded?.Invoke();
         }
     }
 }
