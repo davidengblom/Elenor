@@ -18,6 +18,7 @@ namespace Elenor {
         public event Action<float, float> HealthChanged;
         public event Action Died;
         public event Action<float> Damaged;
+        public event Action HitBlocked;
 
         public float MaxHealth {
             get => maxHealth;
@@ -37,7 +38,17 @@ namespace Elenor {
         }
 
         public void TakeDamage(float amount, Vector2 hitImpulse = default, DamageSource source = DamageSource.Unspecified) {
-            if (!IsAlive || IsInvulnerable || amount <= 0f) return;
+            if (!IsAlive || amount <= 0f) return;
+            if (IsInvulnerable) return;
+
+            var interceptors = GetComponents<IPlayerDamageInterceptor>();
+            for (int i = 0; i < interceptors.Length; i++) {
+                if (interceptors[i].TryInterceptDamage(amount, source, out bool grantMiniInvuln)) {
+                    HitBlocked?.Invoke();
+                    if (grantMiniInvuln) GrantInvulnerability(0.1f);
+                    return;
+                }
+            }
 
             _current = Mathf.Max(0f, _current - amount);
             _invulnUntil = Time.time + hitInvulnerability;

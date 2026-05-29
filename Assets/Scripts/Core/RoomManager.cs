@@ -27,6 +27,7 @@ namespace Elenor {
         public Vector2Int CurrentGridPos => _currentGridPos;
         public FloorSO Floor => _floor;
         public bool IsCurrentRoomExit => _floor != null && _currentGridPos == _floor.ExitPosition;
+        public bool IsRoomTransitioning { get; private set; }
 
         readonly Dictionary<Vector2Int, PickupSO> _pendingRewards = new();
 
@@ -82,7 +83,9 @@ namespace Elenor {
         public bool HasNeighbor(Direction dir) => _floor != null && _floor.HasRoomAt(_currentGridPos + dir.Offset());
 
         void SpawnRoom() {
-            ClearProjectiles();
+            IsRoomTransitioning = true;
+            try {
+                ClearProjectiles();
 
             if (_currentRoom != null) {
                 _currentRoom.RoomCleared -= OnCurrentRoomCleared;
@@ -116,6 +119,9 @@ namespace Elenor {
 
             RoomChanged?.Invoke(_currentGridPos);
             PlacePlayerAtSpawn();
+            } finally {
+                IsRoomTransitioning = false;
+            }
         }
 
         void PlacePlayerAtSpawn() {
