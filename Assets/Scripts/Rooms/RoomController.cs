@@ -15,6 +15,8 @@ namespace Elenor {
         [SerializeField] WeaponPickup weaponPickupPrefab;
         [SerializeField] GameObject doorPrefab;
         [SerializeField] GameObject exitDoorPrefab;
+        [SerializeField] HealthPickup healthPickupPrefab;
+        [SerializeField, Range(0f, 1f)] float healthDropChance = 0.3f;
 
         public bool IsCleared { get; private set; }
 
@@ -122,8 +124,28 @@ namespace Elenor {
                 SpawnWeaponRoomReward();
             } else if (_roomType == RoomType.ModifierRoom) {
                 SpawnModifierRoomReward();
+            } else {
+                TrySpawnHealthPickup();
             }
-            // Normal rooms spawn no reward.
+            
+        }
+
+        void TrySpawnHealthPickup() {
+            if (healthPickupPrefab == null) return;
+            if (UnityEngine.Random.value > healthDropChance) return;
+
+            Transform player = PlayerLocator.Player;
+            if (player != null && player.TryGetComponent<PlayerHealth>(out var health)) {
+                if (health.Current >= health.Max) return;
+            }
+
+            Vector3 spawnPos = transform.position;
+            HealthPickup pickup = Instantiate(
+                healthPickupPrefab,
+                spawnPos,
+                Quaternion.identity,
+                transform
+            );
         }
 
         void SpawnWeaponRoomReward() {
