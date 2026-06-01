@@ -11,9 +11,10 @@ namespace Elenor {
         public int SeedUsed { get; set; }
         public int TargetRoomCount { get; set; }
         public int FloorDepthIndex { get; set; }
-        public Vector2Int StartPosition { get; set; }
+        public Vector2Int StartPosition { get; set; } = Origin;
         public Vector2Int ExitPosition { get; set; }
         public bool UsedFallback { get; set; }
+        public bool IsLayoutComplete => RoomCount >= TargetRoomCount;
 
         public int RoomCount => _rooms.Count;
         public bool TryGetRoom(Vector2Int pos, out RoomNode node) => _rooms.TryGetValue(pos, out node);
