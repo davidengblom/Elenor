@@ -28,10 +28,13 @@ namespace Elenor.EditorTools {
         }
 
         void Generate() {
-            var rng = new SeededRng(_seed);
-            GeneratedFloor floor = _overrideTargetCount ? FloorGenerator.GenerateLayout(_config, rng, _targetCount) : FloorGenerator.GenerateLayout(_config, rng);
+            GeneratedFloor floor = FloorGenerator.Generate(_config, _seed);
 
-            floor.SeedUsed = _seed;
+            if (floor == null) {
+                Debug.LogWarning($"FloorGeneratorDebug: generation failed for seed {_seed}.");
+                return;
+            }
+
             Debug.Log(FloorLayoutDebugPrinter.ToAscii(floor));
         }
     }

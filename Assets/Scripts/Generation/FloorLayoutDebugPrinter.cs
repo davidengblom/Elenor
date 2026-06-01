@@ -17,7 +17,10 @@ namespace Elenor {
             }
 
             var sb = new StringBuilder();
-            sb.AppendLine($"FloorGen: target={floor.TargetRoomCount}, actual={floor.RoomCount} complete={floor.IsLayoutComplete} deadEnds={CountDeadEnds(floor)}");
+            sb.AppendLine(
+                $"FloorGen: target={floor.TargetRoomCount}, actual={floor.RoomCount} " +
+                $"layoutComplete={floor.IsLayoutComplete} valid={floor.IsValid} " +
+                $"deadEnds={CountDeadEnds(floor)} exit={floor.ExitPosition}");
 
             for (int y = maxY; y >= minY; y--) {
                 for (int x = minX; x <= maxX; x++) {
@@ -27,19 +30,34 @@ namespace Elenor {
                         continue;
                     }
 
-                    if (pos == GeneratedFloor.Origin) {
-                        sb.Append("@ ");
-                        continue;
-                    }
+                    RoomNode node = floor.Rooms[pos];
 
-                    int connections = floor.Rooms[pos].CountConnections(floor.Rooms);
-                    sb.Append(connections).Append(" ");
+                    if (floor.IsValid || node.AssignedType.HasValue) {
+                        sb.Append(TypeChar(node, pos, floor)).Append(" ");
+                    } else if (pos == GeneratedFloor.Origin) {
+                        sb.Append("@ ");
+                    } else {
+                        int connections = node.CountConnections(floor.Rooms);
+                        sb.Append(connections).Append(" ");
+                    }
                 }
                 sb.AppendLine();
             }
 
-            sb.AppendLine("Legend: @ = origin/start 1 = dead-end 2 = corridor 3 = junciton (blank = no room)");
+            sb.AppendLine("Legend: S=start E=exit W=weapon M=modifier N=normal | layout-only: @/1/2/3/4");
             return sb.ToString();
+        }
+
+        static char TypeChar(RoomNode node, Vector2Int pos, GeneratedFloor floor) {
+            if (pos == floor.StartPosition) return 'S';
+            if (pos == floor.ExitPosition) return 'E';
+
+            return node.AssignedType switch {
+                RoomType.Starting => 'S',
+                RoomType.WeaponRoom => 'W',
+                RoomType.ModifierRoom => 'M',
+                _ => 'N',
+            };
         }
 
         static int CountDeadEnds(GeneratedFloor floor) {

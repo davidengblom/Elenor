@@ -15,6 +15,7 @@ namespace Elenor {
         public Vector2Int ExitPosition { get; set; }
         public bool UsedFallback { get; set; }
         public bool IsLayoutComplete => RoomCount >= TargetRoomCount;
+        public bool IsValid { get; set; }
 
         public int RoomCount => _rooms.Count;
         public bool TryGetRoom(Vector2Int pos, out RoomNode node) => _rooms.TryGetValue(pos, out node);
