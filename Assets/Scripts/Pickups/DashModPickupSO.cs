@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Elenor {
     [CreateAssetMenu(menuName = "Elenor/Pickups/DashMod", fileName = "Pickup_DashMod")]
-    public class DashModPickupSO : PlayerModifierSO {
+    public class DashModPickupSO : LevelablePlayerModifierSO<DashModModifier, DashModPickupSO.LevelData> {
         [System.Serializable]
         public struct LevelData {
             [Tooltip("Dash damage = effective shot damage * this.")]
@@ -13,21 +13,8 @@ namespace Elenor {
             public bool refundOnKill;
         }
 
-        [SerializeField] LevelData[] levels = new LevelData[MaxLevel];
-
-        public override System.Type ModifierComponentType => typeof(DashModModifier);
-
-        public override void ConfigureModifier(IBehaviorModifier modifier, int level) {
-            if (modifier is not DashModModifier dashMod) return;
-            int index = Mathf.Clamp(level - 1, 0, levels.Length - 1);
-            LevelData data = levels[index];
-            dashMod.Configure(data.dashDamageMultiplier, data.durationMultiplier, data.refundOnKill);
-        }
-
-        void OnValidate() {
-            if (levels == null || levels.Length != MaxLevel) {
-                System.Array.Resize(ref levels, MaxLevel);
-            }
+        protected override void ApplyLevel(DashModModifier modifier, LevelData data) {
+            modifier.Configure(data.dashDamageMultiplier, data.durationMultiplier, data.refundOnKill);
         }
     }
 }
