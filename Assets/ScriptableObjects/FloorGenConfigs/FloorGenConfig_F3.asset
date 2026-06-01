@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba5c6775d501baa47b693049a70ccb32, type: 3}
+  m_Name: FloorGenConfig_F3
+  m_EditorClassIdentifier: Elenor::Elenor.FloorGenConfigSO
+  displayName: Floor 3
+  floorDepthIndex: 2
+  minRoomCount: 12
+  maxRoomCount: 14
+  maxGenerationRetries: 10
+  specialRooms:
+  - roomType: 3
+    count: 2
+    minDistanceFromStart: 0
+  allowedRarities: 00000000
+  startingRoomPrefab: {fileID: 0}
+  itemRoomPrefab: {fileID: 7327923253585575795, guid: fa14ae9d8b98a6d4486b684457ad578a, type: 3}
+  bossArenaPrefab: {fileID: 0}
+  normalRoomPrefabs:
+  - {fileID: 3827708581576041634, guid: 795fb88e69524094581dcd6dadd50895, type: 3}
+  - {fileID: 8940783283723358148, guid: f52e90a08e9e57f40887a14db5502607, type: 3}
+  fallbackFloor: {fileID: 11400000, guid: 04c1cc03f3e068843a8a955703f98760, type: 2}

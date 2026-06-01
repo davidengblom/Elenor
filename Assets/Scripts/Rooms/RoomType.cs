@@ -3,5 +3,6 @@ namespace Elenor {
         Normal,
         WeaponRoom,
         ModifierRoom,
+        Starting,
     }
 }
