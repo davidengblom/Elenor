@@ -219,10 +219,20 @@ namespace Elenor {
                 }
 
                 RoomType neighborType = RoomType.Normal;
+                bool neighborIsBossArena = false;
+
                 if (RoomManager.Instance.Floor != null) {
                     Vector2Int neighborPos = RoomManager.Instance.CurrentGridPos + dir.Offset();
-                    FloorRoomEntry neighborEntry = RoomManager.Instance.Floor.FindRoomAt(neighborPos);
-                    if (neighborEntry != null) neighborType = neighborEntry.roomType;
+                    FloorSO floor = RoomManager.Instance.Floor;
+
+                    FloorRoomEntry neighborEntry = floor.FindRoomAt(neighborPos);
+                    if (neighborEntry != null) {
+                        neighborType = neighborEntry.roomType;
+                    }
+
+                    if (RunManager.Instance != null && neighborPos == floor.ExitPosition && RunManager.Instance.CurrentFloorIndex == RunManager.Instance.CurrentSection.FloorCount - 1) {
+                        neighborIsBossArena = true;
+                    }
                 }
 
                 Quaternion rot = Quaternion.Euler(0f, 0f, dir.ToZRotation());
@@ -234,7 +244,7 @@ namespace Elenor {
                 );
                 if (doorGO.TryGetComponent<Door>(out var door)) {
                     door.Configure(dir);
-                    door.SetNeighborRoomType(neighborType);
+                    door.SetNeighborRoomType(neighborType, neighborIsBossArena);
                 }
             }
 

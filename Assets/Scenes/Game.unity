@@ -2905,7 +2905,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Elenor::Elenor.RunManager
   currentSection: {fileID: 11400000, guid: 0dd76edebfa435746b53c9c0170daead, type: 2}
-  useFixedSeed: 1
+  useFixedSeed: 0
   fixedRunSeed: 12345
 --- !u!114 &1227628815
 MonoBehaviour:

@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0d37afa8b6664f49ae6d26e9a9ee848, type: 3}
   m_Name: RoomContents_Boss
   m_EditorClassIdentifier: Elenor::Elenor.RoomContentsSO
-  initialEnemies: []
+  initialEnemies:
+  - {fileID: 11400000, guid: 5dfd7eba68cbc1f4b9f6a190687ccdb4, type: 2}
