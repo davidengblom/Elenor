@@ -32,6 +32,9 @@ namespace Elenor {
 
         void OnDestroy() {
             if (Instance == this) Instance = null;
+            if (_runtimeFloor != null) {
+                Destroy(_runtimeFloor);
+            }
         }
 
         void Start() {

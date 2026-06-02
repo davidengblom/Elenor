@@ -22,7 +22,7 @@ namespace Elenor {
                         $"GeneratedFloorAdapter: no prefab for room at {node.Position} ({type}).",
                         config
                     );
-                    continue;
+                    return null;
                 }
 
                 entries.Add(new FloorRoomEntry {
