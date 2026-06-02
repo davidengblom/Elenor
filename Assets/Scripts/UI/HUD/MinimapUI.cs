@@ -46,28 +46,45 @@ namespace Elenor.UI.HUD {
         void BuildCells() {
             FloorSO floor = RoomManager.Instance.Floor;
 
-            // Compute min grid pos so we can offset all cells to (0,0)-based coords
             Vector2Int min = new(int.MaxValue, int.MaxValue);
-            foreach (var entry in floor.Rooms) {
-                if (entry.gridPosition.x < min.x) {
-                    min = new Vector2Int(entry.gridPosition.x, min.y);
-                }
-                if (entry.gridPosition.y < min.y) {
-                    min = new Vector2Int(min.x, entry.gridPosition.y);
-                }
+            Vector2Int max = new(int.MinValue, int.MinValue);
+            foreach (FloorRoomEntry entry in floor.Rooms) {
+                if (entry.gridPosition.x < min.x) min.x = entry.gridPosition.x;
+                if (entry.gridPosition.y < min.y) min.y = entry.gridPosition.y;
+                if (entry.gridPosition.x > max.x) max.x = entry.gridPosition.x;
+                if (entry.gridPosition.y > max.y) max.y = entry.gridPosition.y;
             }
 
-            foreach (var entry in floor.Rooms) {
+            int gridW = max.x - min.x + 1;
+            int gridH = max.y - min.y + 1;
+
+            Vector2 cell = cellSize;
+            Vector2 spacing = cellSpacing;
+            Vector2 containerSize = container.rect.size;
+
+            float totalW = gridW * cell.x + (gridW - 1) * spacing.x;
+            float totalH = gridH * cell.y + (gridH - 1) * spacing.y;
+
+            if (totalW > containerSize.x || totalH > containerSize.y) {
+                float scale = Mathf.Min(
+                    containerSize.x / totalW,
+                    containerSize.y / totalH
+                );
+                cell *= scale;
+                spacing *= scale;
+            }
+
+            foreach (FloorRoomEntry entry in floor.Rooms) {
                 Vector2Int local = entry.gridPosition - min;
                 var go = new GameObject($"Cell_{entry.gridPosition.x}_{entry.gridPosition.y}", typeof(RectTransform), typeof(Image));
                 go.transform.SetParent(container, false);
 
                 var rt = (RectTransform)go.transform;
                 rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0f, 0f);
-                rt.sizeDelta = cellSize;
+                rt.sizeDelta = cell;
                 rt.anchoredPosition = new Vector2(
-                    local.x * (cellSize.x + cellSpacing.x),
-                    local.y * (cellSize.y + cellSpacing.y)
+                    local.x * (cell.x + spacing.x),
+                    local.y * (cell.y + spacing.y)
                 );
 
                 _cells[entry.gridPosition] = go.GetComponent<Image>();
