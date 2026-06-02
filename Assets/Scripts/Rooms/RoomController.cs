@@ -40,6 +40,9 @@ namespace Elenor {
                 IsCleared = true;
                 if (state.PendingReward != null) SpawnPickupForSO(state.PendingReward);
                 SpawnDoors();
+            } else if (_roomType == RoomType.Starting) {
+                IsCleared = true;
+                SpawnDoors();
             } else {
                 SpawnInitialEnemies();
             }

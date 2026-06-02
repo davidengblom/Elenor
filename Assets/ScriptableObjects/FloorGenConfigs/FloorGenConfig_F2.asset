@@ -18,13 +18,13 @@ MonoBehaviour:
   maxRoomCount: 11
   maxGenerationRetries: 10
   specialRooms:
-  - roomType: 3
+  - roomType: 2
     count: 2
     minDistanceFromStart: 0
   allowedRarities: 00000000
-  startingRoomPrefab: {fileID: 0}
+  startingRoomPrefab: {fileID: 2036788168236358320, guid: 5cf4cb90cbdcd334d856d5553bb69286, type: 3}
   itemRoomPrefab: {fileID: 7327923253585575795, guid: fa14ae9d8b98a6d4486b684457ad578a, type: 3}
-  bossArenaPrefab: {fileID: 0}
+  bossArenaPrefab: {fileID: 240782267083033146, guid: 6d48337f388067749a28a1cfbe4c42f5, type: 3}
   normalRoomPrefabs:
   - {fileID: 3827708581576041634, guid: 795fb88e69524094581dcd6dadd50895, type: 3}
   - {fileID: 8940783283723358148, guid: f52e90a08e9e57f40887a14db5502607, type: 3}

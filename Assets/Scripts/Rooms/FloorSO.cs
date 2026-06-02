@@ -39,5 +39,21 @@ namespace Elenor {
         }
 
         public bool HasRoomAt(Vector2Int pos) => FindRoomAt(pos) != null;
+
+        public static FloorSO CreateRuntimeInstance() => CreateInstance<FloorSO>();
+
+        public void SetRuntimeData(
+            string name,
+            Vector2Int start,
+            Vector2Int exit,
+            List<FloorRoomEntry> roomEntries,
+            List<PickupRarity> rarities
+        ) {
+            displayName = name;
+            startPosition = start;
+            exitPosition = exit;
+            rooms = roomEntries ?? new List<FloorRoomEntry>();
+            allowedRarities = rarities ?? new List<PickupRarity> { PickupRarity.Common };
+        }
     }
 }

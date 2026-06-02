@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Section_Main
   m_EditorClassIdentifier: Elenor::Elenor.SectionSO
   displayName: Section
-  floors:
-  - {fileID: 11400000, guid: 6e3379bef8a7874409f942f5ff3f2a6f, type: 2}
-  - {fileID: 11400000, guid: 3166249867de55943a9d94116ee4688a, type: 2}
-  - {fileID: 11400000, guid: 04c1cc03f3e068843a8a955703f98760, type: 2}
+  floorConfigs:
+  - {fileID: 11400000, guid: f566a66c90db95348b109203fc52e52c, type: 2}
+  - {fileID: 11400000, guid: 29b58c6a87589244baa1200de6f58ecf, type: 2}
+  - {fileID: 11400000, guid: 27cbea4bb56e12344b1f053ffd03e260, type: 2}
