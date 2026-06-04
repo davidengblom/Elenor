@@ -35,6 +35,8 @@ namespace Elenor {
         void Update() {
             if (data == null || !data.IsRanged) return;
 
+            if (TryGetComponent<EnemyLineOfSightAggro>(out var los) && !los.CanAttack) return;
+
             Transform player = PlayerLocator.Player;
             if (player == null) return;
             if (Time.time < _nextFireTime) return;

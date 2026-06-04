@@ -22,7 +22,7 @@ MonoBehaviour:
     count: 1
     minDistanceFromStart: 3
   allowedRarities: 00000000
-  startingRoomPrefab: {fileID: 2717601366822829384, guid: 9fbc4782c3079ac4581fe08577f85167, type: 3}
+  startingRoomPrefab: {fileID: 2036788168236358320, guid: 5cf4cb90cbdcd334d856d5553bb69286, type: 3}
   itemRoomPrefab: {fileID: 7327923253585575795, guid: fa14ae9d8b98a6d4486b684457ad578a, type: 3}
   bossArenaPrefab: {fileID: 240782267083033146, guid: 6d48337f388067749a28a1cfbe4c42f5, type: 3}
   normalRoomPrefabs:

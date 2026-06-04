@@ -34,8 +34,12 @@ namespace Elenor {
                 return;
             }
 
+            if (TryGetComponent<EnemyLineOfSightAggro>(out var los) && !los.CanMove) {
+                _rb.linearVelocity = Vector2.zero;
+                return;
+            }
+
             if (Time.time < _stunUntil) {
-                // Stunned: let physics carry whatever impulse was applied
                 return;
             }
 
