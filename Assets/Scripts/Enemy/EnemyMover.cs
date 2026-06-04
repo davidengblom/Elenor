@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Elenor {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class EnemyMover : MonoBehaviour {
+    public class EnemyMover : MonoBehaviour, IEnemyComponent {
         [SerializeField] EnemySO data;
 
         Rigidbody2D _rb;

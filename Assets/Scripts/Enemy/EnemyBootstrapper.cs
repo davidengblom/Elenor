@@ -17,11 +17,9 @@ namespace Elenor {
         }
 
         void Apply() {
-            // Could this be done in a loop?
-            if (TryGetComponent<EnemyHealth>(out var h)) h.Init(data);
-            if (TryGetComponent<EnemyMover>(out var m)) m.Init(data);
-            if (TryGetComponent<EnemyShooter>(out var s)) s.Init(data);
-            if (TryGetComponent<EnemyMelee>(out var ml)) ml.Init(data);
+            foreach (var component in GetComponents<IEnemyComponent>()) {
+                component.Init(data);
+            }
 
             if (data == null) return;
 
@@ -32,7 +30,9 @@ namespace Elenor {
             transform.localScale = Vector3.one * data.Scale;
 
             if (TryGetComponent<Rigidbody2D>(out var rb)) {
-                rb.constraints = data.IsStationary ? RigidbodyConstraints2D.FreezeAll : RigidbodyConstraints2D.FreezeRotation;
+                rb.constraints = data.IsStationary
+                    ? RigidbodyConstraints2D.FreezeAll
+                    : RigidbodyConstraints2D.FreezeRotation;
             }
         }
     }

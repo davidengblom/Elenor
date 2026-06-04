@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Elenor {
-    public class EnemyShooter : MonoBehaviour {
+    public class EnemyShooter : MonoBehaviour, IEnemyComponent {
         [SerializeField] EnemySO data;
         [SerializeField] Projectile projectileShellPrefab;
         [SerializeField] float muzzleOffset = 0.45f;
@@ -60,7 +60,7 @@ namespace Elenor {
             );
 
             proj.Configure(config);
-            float dmg = config.Damage * weapon.DamageMultiplier;
+            float dmg = EnemyStatApplicator.ScaleDamage(config.Damage * weapon.DamageMultiplier);
             proj.Launch(
                 dir * config.Speed,
                 dmg,

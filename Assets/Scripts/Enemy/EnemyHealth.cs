@@ -3,7 +3,7 @@ using UnityEngine;
 using System;
 
 namespace Elenor {
-    public class EnemyHealth : MonoBehaviour, IDamageable {
+    public class EnemyHealth : MonoBehaviour, IDamageable, IEnemyComponent {
         [SerializeField] EnemySO data;
         [SerializeField, Tooltip("Fallback if no EnemySO is assigned.")]
         float fallbackMaxHealth = 3f;
@@ -44,7 +44,7 @@ namespace Elenor {
 
         public void Init(EnemySO so) {
             data = so;
-            _current = so != null ? so.MaxHealth : fallbackMaxHealth;
+            _current = EnemyStatApplicator.GetMaxHealth(so, fallbackMaxHealth);
         }
 
         void OnEnable() {
