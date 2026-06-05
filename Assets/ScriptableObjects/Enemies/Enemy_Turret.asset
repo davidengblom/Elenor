@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01fd9542dfd088943afb5e74563589b4, type: 3}
-  m_Name: Enemy_Turret_F2
+  m_Name: Enemy_Turret
   m_EditorClassIdentifier: Elenor::Elenor.EnemySO
   displayName: Turret
   sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
@@ -20,3 +20,7 @@ MonoBehaviour:
   moveSpeed: 0
   weapon: {fileID: 11400000, guid: 54b43491c24599e4ea3f9415dfdb4ecb, type: 2}
   contactDamage: 0
+  detectionRange: 10
+  needsSightToAttack: 0
+  leashDistance: 12
+  leashSeconds: 3

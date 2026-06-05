@@ -85,25 +85,30 @@ namespace Elenor {
                 _runtimeFloor = null;
             }
 
+            const int extraSeedAttempts = 5;
             int floorSeed = GenerationSeed.ForFloor(_runSeed, CurrentFloorIndex);
-            GeneratedFloor generated = FloorGenerator.Generate(config, floorSeed);
+            GeneratedFloor generated = null;
+            int seedUsed = floorSeed;
 
-            FloorSO floor;
-            if (generated == null) {
-                Debug.LogWarning($"RunManager: using fallback floor for index {CurrentFloorIndex}", this);
-                floor = config.FallbackFloor;
-            } else {
-                bool isFinalFloor = CurrentFloorIndex == currentSection.FloorCount - 1;
-                _runtimeFloor = GeneratedFloorAdapter.ToFloorSO(generated, config, floorSeed, isFinalFloor);
-                floor = _runtimeFloor;
+            for (int seedOffset = 0; seedOffset <= extraSeedAttempts && generated == null; seedOffset++) {
+                int trySeed = floorSeed + seedOffset;
+                generated = FloorGenerator.Generate(config, trySeed);
+                if (generated != null) {
+                    seedUsed = trySeed;
+                }
             }
 
-            if (floor == null) {
-                Debug.LogError($"RunManager: no floor to load at index {CurrentFloorIndex}", this);
+            if (generated == null) {
+                Debug.LogError(
+                    $"RunManager: floor generation failed at index {CurrentFloorIndex}", this
+                );
                 return;
             }
 
-            RoomManager.Instance.LoadFloor(floor);
+            bool isFinalFloor = CurrentFloorIndex == currentSection.FloorCount - 1;
+            _runtimeFloor = GeneratedFloorAdapter.ToFloorSO(generated, config, seedUsed, isFinalFloor);
+
+            RoomManager.Instance.LoadFloor(_runtimeFloor);
             FloorIndexChanged?.Invoke(CurrentFloorIndex);
         }
 

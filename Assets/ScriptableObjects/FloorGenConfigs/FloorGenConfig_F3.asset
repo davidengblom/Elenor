@@ -28,4 +28,3 @@ MonoBehaviour:
   normalRoomPrefabs:
   - {fileID: 3827708581576041634, guid: 795fb88e69524094581dcd6dadd50895, type: 3}
   - {fileID: 8940783283723358148, guid: f52e90a08e9e57f40887a14db5502607, type: 3}
-  fallbackFloor: {fileID: 11400000, guid: 04c1cc03f3e068843a8a955703f98760, type: 2}

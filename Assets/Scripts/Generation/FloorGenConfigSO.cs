@@ -33,10 +33,6 @@ namespace Elenor {
         [SerializeField] GameObject bossArenaPrefab;
         [SerializeField] List<GameObject> normalRoomPrefabs = new();
 
-        [Header("Fallback")]
-        [SerializeField, Tooltip("Fallback floor if generation fails.")]
-        FloorSO fallbackFloor;
-
         public string DisplayName => displayName;
         public int FloorDepthIndex => floorDepthIndex;
         public int MinRoomCount => minRoomCount;
@@ -48,7 +44,6 @@ namespace Elenor {
         public GameObject ItemRoomPrefab => itemRoomPrefab;
         public GameObject BossArenaPrefab => bossArenaPrefab;
         public IReadOnlyList<GameObject> NormalRoomPrefabs => normalRoomPrefabs;
-        public FloorSO FallbackFloor => fallbackFloor;
         public bool IsFinalFloorInSection => bossArenaPrefab != null;
     }
 }

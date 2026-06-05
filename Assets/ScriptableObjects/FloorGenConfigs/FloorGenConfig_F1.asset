@@ -26,6 +26,4 @@ MonoBehaviour:
   itemRoomPrefab: {fileID: 7327923253585575795, guid: fa14ae9d8b98a6d4486b684457ad578a, type: 3}
   bossArenaPrefab: {fileID: 240782267083033146, guid: 6d48337f388067749a28a1cfbe4c42f5, type: 3}
   normalRoomPrefabs:
-  - {fileID: 3827708581576041634, guid: 795fb88e69524094581dcd6dadd50895, type: 3}
-  - {fileID: 8940783283723358148, guid: f52e90a08e9e57f40887a14db5502607, type: 3}
-  fallbackFloor: {fileID: 11400000, guid: 6e3379bef8a7874409f942f5ff3f2a6f, type: 2}
+  - {fileID: 2717601366822829384, guid: 9fbc4782c3079ac4581fe08577f85167, type: 3}

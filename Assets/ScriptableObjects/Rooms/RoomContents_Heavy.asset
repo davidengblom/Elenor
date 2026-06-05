@@ -13,9 +13,6 @@ MonoBehaviour:
   m_Name: RoomContents_Heavy
   m_EditorClassIdentifier: Elenor::Elenor.RoomContentsSO
   initialEnemies:
-  - {fileID: 11400000, guid: c61d63a4ffbef0d4c861f6428c13ffcd, type: 2}
-  - {fileID: 11400000, guid: c61d63a4ffbef0d4c861f6428c13ffcd, type: 2}
-  - {fileID: 11400000, guid: c61d63a4ffbef0d4c861f6428c13ffcd, type: 2}
-  possiblePickups:
-  - {fileID: 11400000, guid: 6bf2c2dd1a2bd2d4a86113cdef2aa46d, type: 2}
-  - {fileID: 11400000, guid: cf813b97a4628b240b6643c5f08892d8, type: 2}
+  - {fileID: 11400000, guid: 179f322ebdc260740a7b36feed78260e, type: 2}
+  - {fileID: 11400000, guid: 179f322ebdc260740a7b36feed78260e, type: 2}
+  - {fileID: 11400000, guid: 179f322ebdc260740a7b36feed78260e, type: 2}

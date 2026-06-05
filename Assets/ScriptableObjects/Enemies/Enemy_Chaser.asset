@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01fd9542dfd088943afb5e74563589b4, type: 3}
-  m_Name: Enemy_Chaser_F2
+  m_Name: Enemy_Chaser
   m_EditorClassIdentifier: Elenor::Elenor.EnemySO
   displayName: Chaser
   sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
@@ -20,3 +20,7 @@ MonoBehaviour:
   moveSpeed: 3.5
   weapon: {fileID: 0}
   contactDamage: 1
+  detectionRange: 10
+  needsSightToAttack: 0
+  leashDistance: 12
+  leashSeconds: 3

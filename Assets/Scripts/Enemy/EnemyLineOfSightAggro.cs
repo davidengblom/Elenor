@@ -26,6 +26,8 @@ namespace Elenor {
         public bool IsAggroed => _aggroed;
         public bool HasLineOfSight => _hasLineOfSight;
 
+        static int _spawnStaggerCounter;
+
         /// <summary> False while idle </summary>
         public bool CanMove => !_useLosAggro || _aggroed;
 
@@ -38,7 +40,8 @@ namespace Elenor {
 
         public void Init(EnemySO so) {
             data = so;
-            _framePhase = Mathf.Abs(GetInstanceID() % Mathf.Max(1, losCheckIntervalFrames)); //TODO check alternative to GetInstanceID cause of deprecation
+            int interval = Mathf.Max(1, losCheckIntervalFrames);
+            _framePhase = (_spawnStaggerCounter++) % interval;
             _leashTimer = 0f;
 
             if (so == null) {
